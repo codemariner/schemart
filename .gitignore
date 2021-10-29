@@ -1,0 +1,11 @@
+*-debug.log
+*-error.log
+.nvmrc
+/.nyc_output
+/dist
+/lib
+/package-lock.json
+/tmp
+coverage
+dist
+node_modules

@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"importHelpers": true,
+		"declaration": true,
+		"esModuleInterop": true,
+		"lib": ["esnext", "dom"],
+		"module": "commonjs",
+		"outDir": "dist",
+		"rootDir": "src",
+		"strict": true,
+		"jsx": "react",
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"inlineSourceMap": true,
+		"target": "es2017",
+		"resolveJsonModule": true
+	},
+	"include": ["src/**/*"]
+}

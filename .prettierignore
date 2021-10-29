@@ -1,0 +1,10 @@
+package-lock.json
+dist/
+.nyc_output/
+coverage/
+.vscode/
+test/.recordings
+kubernetes.yaml
+dev/
+.github/
+test/fixtures/config/invalid-parse
