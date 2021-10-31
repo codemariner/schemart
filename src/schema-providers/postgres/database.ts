@@ -1,11 +1,14 @@
 import Bluebird from 'bluebird';
 import { Pool } from 'pg';
 
+import baseDebug from '../../debug';
 import { Enum, Table } from '../../schema-info';
 
 import { PostgresColumn, PostgresConfig, PostgresSchemaInfo } from './types';
 
 type Db = Pool;
+
+const debug = baseDebug.extend('schema-providers/postrgres');
 
 function getSchemaName(name?: string): string {
 	return name ?? 'public';
@@ -118,16 +121,20 @@ async function usingDb<T extends (db: Db) => Promise<unknown>>(
 	});
 	const poolDisposer = Bluebird.resolve(pool)
 		.tap(async () => {
+			debug('connecting to database');
 			const client = await pool.connect();
+			debug('connected to database');
 			client.release();
 		})
 		.disposer(async (db) => {
+			debug('closing database pool');
 			await db.end();
 		});
 	return Bluebird.using(poolDisposer, fn);
 }
 
 export async function getDbSchema(config: PostgresConfig): Promise<PostgresSchemaInfo> {
+	debug('fetching database schema from', config.dbUri);
 	return usingDb(config.dbUri ?? '', async (db): Promise<PostgresSchemaInfo> => {
 		const [enums, tables] = await Promise.all([getEnums(db, config), getTables(db, config)]);
 		const tablesWithColumns = await Bluebird.map(tables, async (table) => {

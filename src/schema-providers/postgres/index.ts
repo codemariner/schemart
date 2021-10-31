@@ -1,7 +1,7 @@
 import { SchemaProvider } from '../../schema-provider';
 
 import { getDbSchema } from './database';
-import { PostgresColumn, PostgresConfig, PostgresSchemaInfo } from './types';
+import { PostgresConfig } from './types';
 import { mapToRuntype } from './runtypes';
 
 export const PostgresSchemaProvider: SchemaProvider<PostgresConfig> = {

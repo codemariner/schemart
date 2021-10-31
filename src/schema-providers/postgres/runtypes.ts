@@ -1,16 +1,19 @@
 import camelcase from 'lodash.camelcase';
 import capitalize from 'lodash.capitalize';
 
+import baseDebug from '../../debug';
 import { Column } from '../../schema-info';
 import { SchemaProvider } from '../../schema-provider';
 
 import { PostgresConfig, PostgresSchemaInfo } from './types';
 
+const debug = baseDebug.extend('schema-providers/postgres');
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 	_config: PostgresConfig,
 	schemaInfo: PostgresSchemaInfo,
 	column: Column
 ): string => {
+	debug('mapToRunType column', column.name);
 	const { enums } = schemaInfo;
 	if (column.dataType === 'USER-DEFINED') {
 		const enumName = capitalize(camelcase(column.udtName));

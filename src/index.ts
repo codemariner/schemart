@@ -4,6 +4,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 
 import { Config } from './config';
+import debug from './debug';
 import { schemaProviders } from './schema-providers';
 import { mapToRuntype } from './schema-providers/postgres/runtypes';
 import { generate as generateRuntypes } from './type-generators/runtypes';
@@ -23,6 +24,7 @@ export async function generate(configPath: string, databaseUri?: string): Promis
 		...(rawConfig as any),
 		dbUri,
 	};
+	debug('read config', uncheckedConfig);
 	const { databaseType } = Config.check(uncheckedConfig);
 
 	const schemaProvider = schemaProviders[databaseType];
@@ -33,6 +35,7 @@ export async function generate(configPath: string, databaseUri?: string): Promis
 			).join(',')}`
 		);
 	}
+	debug('using schema provider for', databaseType);
 
 	const config = schemaProvider.configRt.check(uncheckedConfig);
 	const schemaInfo = await schemaProvider.getDbSchema(config);
@@ -43,5 +46,7 @@ export async function generate(configPath: string, databaseUri?: string): Promis
 		result = generateRuntypes(config, schemaInfo, mapToRuntype);
 	}
 
-	fs.promises.writeFile(path.join(__dirname, config.outfile), result);
+	const file = path.join(path.dirname(configPath), config.outfile);
+	debug('writing schema def to file', file);
+	await fs.promises.writeFile(file, result, 'utf-8');
 }

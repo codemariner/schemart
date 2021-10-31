@@ -3,10 +3,13 @@ import camelcase from 'lodash.camelcase';
 import capitalize from 'lodash.capitalize';
 
 import { Config } from '../config';
+import baseDebug from '../debug';
 import { Enum, SchemaInfo, TableWithColumns } from '../schema-info';
 import { SchemaProvider } from '../schema-provider';
 
 type MapToRuntypeFn = SchemaProvider['mapToRuntype'];
+
+const debug = baseDebug.extend('type-generators/runtypes');
 
 const ObjStartTag = (type: string): string => `${type}({\n`;
 
@@ -73,10 +76,12 @@ export function generate(
 	schemaInfo: SchemaInfo,
 	mapToRuntype: MapToRuntypeFn
 ): string {
+	debug('generating type specs');
 	const { enums, tables } = schemaInfo;
 	let result = '// generated from schemart\n\n';
 	result += "import * as rt from 'runtypes';\n\n";
 	enums?.forEach((enumInfo) => {
+		debug('transforming enum', enumInfo.name);
 		if (config.enumsAsTypes) {
 			result += transformEnumAsUnion(enumInfo);
 		} else {
@@ -84,6 +89,7 @@ export function generate(
 		}
 	});
 	tables?.forEach((table) => {
+		debug('transforming table', table.tableName);
 		result += transformTable(config, table, schemaInfo, mapToRuntype);
 	});
 	return result;

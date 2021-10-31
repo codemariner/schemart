@@ -1,6 +1,6 @@
 import { Array, Boolean, Literal, Optional, Record, Static, String, Union } from 'runtypes';
 
-import { DatabaseType } from './schema-providers';
+import { DatabaseType } from './schema-providers/database-types';
 
 const RuntimeType = Union(Literal('runtypes'));
 
@@ -13,4 +13,5 @@ export const Config = Record({
 	enumsAsTypes: Optional(Boolean),
 	runtimeType: RuntimeType,
 });
+
 export type Config = Static<typeof Config>;
