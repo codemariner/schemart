@@ -1,0 +1,56 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres:13.4-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: schemart
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  mysql:
+    image: mysql:8
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: schemart
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+
+  db-migrate-postgres:
+    image: migrate/migrate
+    depends_on:
+      - postgres
+    volumes:
+      - ./bin:/src/bin
+      - ./migrations/postgres:/src/migrations
+    entrypoint: /bin/ash
+    command:
+      - -c
+      - |
+        /src/bin/wait-for-it.sh postgres:5432 -- echo "postgres running"
+        migrate \
+          -verbose \
+          -path /src/migrations \
+          -database postgres://postgres:postgres@postgres:5432/schemart?sslmode=disable \
+          up
+
+  db-migrate-mysql:
+    image: migrate/migrate
+    depends_on:
+      - mysql
+    volumes:
+      - ./bin:/src/bin
+      - ./migrations/mysql:/src/migrations
+    entrypoint: /bin/ash
+    command:
+      - -c
+      - |
+        /src/bin/wait-for-it.sh mysql:3306 -- echo "mysql running"
+        migrate \
+          -verbose \
+          -path /src/migrations \
+          -database "mysql://mysql:mysql@tcp(mysql:3306)/schemart?x-tls-insecure-skip-verify=true" \
+          up

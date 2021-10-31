@@ -80,6 +80,7 @@ const overrides = {
 
 	// rules we don't like
 	'max-classes-per-file': ['off'],
+	'class-methods-use-this': ['off'],
 
 	// Typescript Overrides
 	'@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],

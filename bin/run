@@ -1,7 +1,13 @@
 #!/usr/bin/env node
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-sync */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const fs = require('fs')
 const path = require('path')
+
 const project = path.join(__dirname, '../tsconfig.json')
 const dev = fs.existsSync(project)
 
@@ -9,5 +15,5 @@ if (dev) {
   require('ts-node').register({project})
 }
 
-require(`../${dev ? 'src' : 'lib'}`).run()
+require(`../${dev ? 'src/command' : 'dist/command'}`).default.run()
 .catch(require('@oclif/errors/handle'))

@@ -1,83 +1,99 @@
 {
-  "name": "schemart",
-  "version": "1.0.0",
-  "author": "Scott Sayles @codemariner",
-  "bin": {
-    "schemart": "./bin/run"
-  },
-  "bugs": "https://github.com/codemariner/schemart/issues",
-  "config": {
-    "prettier": "**/*.{graphql,js,json,css,jsx,mjs,ts,tsx,yaml,yml}"
-  },
-  "dependencies": {
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^3",
-    "runtypes": "^6.5.0",
-    "tslib": "^2.3.1"
-  },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^10",
-    "@typescript-eslint/eslint-plugin": "^5.2.0",
-    "@typescript-eslint/parser": "^5.2.0",
-    "del-cli": "^3.0.1",
-    "eslint": "^8.1.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-jest": "^25.2.2",
-    "husky": "^5.1.3",
-    "jest": "^26.6.3",
-    "lint-staged": "^10.5.4",
-    "pretier": "^0.0.1",
-    "prettier-eslint-cli": "^5.0.0",
-    "ts-jest": "^27.0.7",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.4.4"
-  },
-  "engines": {
-    "node": ">=12.0.0"
-  },
-  "files": [
-    "/bin",
-    "/dist"
-  ],
-  "homepage": "https://github.com/codemariner/schemart",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
-  "lint-staged": {
-    "*.{ts,js,json,yaml,yml}": [
-      "eslint --cache --fix",
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "main": "dist/index.js",
-  "oclif": {
-    "bin": "schemart"
-  },
-  "repository": "codemariner/schemart",
-  "scripts": {
-    "build": "tsc",
-    "build:test": "tsc --project test --noEmit",
-    "clean": "del-cli -f dist && del-cli -f coverage",
-    "lint": "eslint . --ext .ts,.js",
-    "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
-    "prepublishOnly": "del-cli -f coverage",
-    "prettier": "prettier  --write \"$npm_package_config_prettier\"",
-    "prettier:check": "prettier  --list-different \"$npm_package_config_prettier\"",
-    "test": "echo NO TESTS",
-    "version": "oclif-dev readme && git add README.md"
-  },
-  "types": "dist/index.d.ts"
+	"name": "schemart",
+	"version": "1.0.0",
+	"author": "Scott Sayles @codemariner",
+	"bin": {
+		"schemart": "./bin/run"
+	},
+	"bugs": "https://github.com/codemariner/schemart/issues",
+	"config": {
+		"prettier": "**/*.{graphql,js,json,css,jsx,mjs,ts,tsx,yaml,yml}"
+	},
+	"dependencies": {
+		"@oclif/command": "^1",
+		"@oclif/config": "^1",
+		"@oclif/parser": "^3.8.5",
+		"@oclif/plugin-help": "^3",
+		"@types/bluebird": "^3.5.36",
+		"@types/lodash.camelcase": "^4.3.6",
+		"@types/lodash.capitalize": "^4.2.6",
+		"@types/pg": "^8.6.1",
+		"@types/pg-pool": "^2.0.3",
+		"bluebird": "^3.7.2",
+		"generate-runtypes": "^3.1.0",
+		"js-yaml": "^4.1.0",
+		"lodash.camelcase": "^4.3.0",
+		"lodash.capitalize": "^4.2.1",
+		"moment-range": "^4.0.2",
+		"pg": "^8.7.1",
+		"pg-pool": "^3.4.1",
+		"runtypes": "^6.5.0",
+		"tslib": "^2.3.1"
+	},
+	"devDependencies": {
+		"@oclif/dev-cli": "^1",
+		"@types/jest": "^26.0.20",
+		"@types/js-yaml": "^4.0.4",
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "^5.2.0",
+		"@typescript-eslint/parser": "^5.2.0",
+		"del-cli": "^3.0.1",
+		"eslint": "^8.1.0",
+		"eslint-config-airbnb-base": "^14.2.1",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-import": "^2.25.2",
+		"eslint-plugin-jest": "^25.2.2",
+		"husky": "^5.1.3",
+		"jest": "^26.6.3",
+		"lint-staged": "^10.5.4",
+		"pretier": "^0.0.1",
+		"prettier-eslint-cli": "^5.0.0",
+		"ts-jest": "^27.0.7",
+		"ts-node": "^10.4.0",
+		"typescript": "^4.4.4"
+	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
+	"files": [
+		"/bin",
+		"/dist"
+	],
+	"homepage": "https://github.com/codemariner/schemart",
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"keywords": [
+		"oclif"
+	],
+	"license": "MIT",
+	"lint-staged": {
+		"*.{ts,js,json,yaml,yml}": [
+			"eslint --cache --fix",
+			"prettier --write",
+			"git add"
+		]
+	},
+	"main": "dist/index.js",
+	"oclif": {
+		"bin": "schemart"
+	},
+	"repository": "codemariner/schemart",
+	"scripts": {
+		"build": "tsc",
+		"build:test": "tsc --project test --noEmit",
+		"clean": "del-cli -f dist && del-cli -f coverage",
+		"compose": "docker-compose -p schemart -f ./test/docker-compose.yaml",
+		"lint": "eslint . --ext .ts,.js",
+		"posttest": "eslint . --ext .ts --config .eslintrc",
+		"prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+		"prepublishOnly": "del-cli -f coverage",
+		"prettier": "prettier  --write \"$npm_package_config_prettier\"",
+		"prettier:check": "prettier  --list-different \"$npm_package_config_prettier\"",
+		"test": "echo NO TESTS",
+		"version": "oclif-dev readme && git add README.md"
+	},
+	"types": "dist/index.d.ts"
 }
