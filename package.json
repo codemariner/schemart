@@ -1,6 +1,6 @@
 {
 	"name": "schemart",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"author": "Scott Sayles @codemariner",
 	"bin": {
 		"schemart": "./bin/run"
@@ -82,7 +82,15 @@
 	},
 	"main": "dist/index.js",
 	"oclif": {
-		"bin": "schemart"
+		"bin": "schemart",
+		"commands": "./dist/command",
+		"plugins": [
+			"@oclif/plugin-help"
+		],
+		"macos": {
+			"identifier": "com.schemart",
+			"sign": "Developer ID Installer: Scott Sayles"
+		}
 	},
 	"repository": "codemariner/schemart",
 	"scripts": {
@@ -92,7 +100,7 @@
 		"compose": "docker-compose -p schemart -f ./test/docker-compose.yaml",
 		"lint": "eslint . --ext .ts,.js",
 		"posttest": "eslint . --ext .ts --config .eslintrc",
-		"prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+		"prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
 		"prepublishOnly": "del-cli -f coverage",
 		"prettier": "prettier  --write \"$npm_package_config_prettier\"",
 		"prettier:check": "prettier  --list-different \"$npm_package_config_prettier\"",
