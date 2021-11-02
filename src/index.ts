@@ -64,7 +64,3 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 	await fs.promises.writeFile(file, result, 'utf-8');
 }
 
-generate({
-	configFile: path.join(__dirname, '../tmp/schemart.yaml'),
-	dbUri: 'postgres://postgres:postgres@localhost:5432/schemart',
-});
