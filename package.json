@@ -1,13 +1,34 @@
 {
 	"name": "schemart",
 	"version": "0.1.0",
-	"author": "Scott Sayles @codemariner",
+	"author": "Scott Sayles",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"bin": {
 		"schemart": "./bin/run"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/codemariner/schemart"
 	},
 	"bugs": "https://github.com/codemariner/schemart/issues",
 	"config": {
 		"prettier": "**/*.{graphql,js,json,css,jsx,mjs,ts,tsx,yaml,yml}"
+	},
+	"scripts": {
+		"build": "tsc",
+		"build:test": "tsc --project test --noEmit",
+		"clean": "del-cli -f dist && del-cli -f coverage",
+		"compose": "docker-compose -p schemart -f ./test/docker-compose.yaml",
+		"lint": "eslint . --ext .ts,.js",
+		"posttest": "eslint . --ext .ts --config .eslintrc",
+		"prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+		"prepublishOnly": "del-cli -f coverage",
+		"prettier": "prettier  --write \"$npm_package_config_prettier\"",
+		"prettier:check": "prettier  --list-different \"$npm_package_config_prettier\"",
+		"test": "echo NO TESTS",
+		"version": "oclif-dev readme && git add README.md"
 	},
 	"dependencies": {
 		"@oclif/command": "^1",
@@ -72,7 +93,6 @@
 	"keywords": [
 		"oclif"
 	],
-	"license": "MIT",
 	"lint-staged": {
 		"*.{ts,js,json,yaml,yml}": [
 			"eslint --cache --fix",
@@ -80,7 +100,6 @@
 			"git add"
 		]
 	},
-	"main": "dist/index.js",
 	"oclif": {
 		"bin": "schemart",
 		"commands": "./dist/command",
@@ -91,21 +110,5 @@
 			"identifier": "com.schemart",
 			"sign": "Developer ID Installer: Scott Sayles"
 		}
-	},
-	"repository": "codemariner/schemart",
-	"scripts": {
-		"build": "tsc",
-		"build:test": "tsc --project test --noEmit",
-		"clean": "del-cli -f dist && del-cli -f coverage",
-		"compose": "docker-compose -p schemart -f ./test/docker-compose.yaml",
-		"lint": "eslint . --ext .ts,.js",
-		"posttest": "eslint . --ext .ts --config .eslintrc",
-		"prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-		"prepublishOnly": "del-cli -f coverage",
-		"prettier": "prettier  --write \"$npm_package_config_prettier\"",
-		"prettier:check": "prettier  --list-different \"$npm_package_config_prettier\"",
-		"test": "echo NO TESTS",
-		"version": "oclif-dev readme && git add README.md"
-	},
-	"types": "dist/index.d.ts"
+	}
 }
