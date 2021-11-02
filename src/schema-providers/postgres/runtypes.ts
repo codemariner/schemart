@@ -2,16 +2,21 @@ import camelcase from 'lodash.camelcase';
 import capitalize from 'lodash.capitalize';
 
 import baseDebug from '../../debug';
-import { Column } from '../../schema-info';
 import { SchemaProvider } from '../../schema-provider';
 
-import { PostgresConfig, PostgresSchemaInfo } from './types';
+import { PostgresColumn, PostgresConfig, PostgresSchemaInfo } from './types';
 
 const debug = baseDebug.extend('schema-providers/postgres');
+
+export const getDataType: SchemaProvider['getDataType'] = (
+	_config: PostgresConfig,
+	column: PostgresColumn
+): string => column.udtName;
+
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 	_config: PostgresConfig,
 	schemaInfo: PostgresSchemaInfo,
-	column: Column
+	column: PostgresColumn
 ): string => {
 	debug('mapToRunType column', column.name);
 	const { enums } = schemaInfo;
@@ -40,7 +45,12 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'timetz':
 		case 'interval':
 		case 'tsvector':
-		case 'name':
+		case 'int4range':
+		case 'int8range':
+		case 'numrange':
+		case 'tsrange':
+		case 'tstzrange':
+		case 'daterange':
 			return 'rt.String';
 		case 'int2':
 		case 'int4':

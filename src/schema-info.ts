@@ -12,7 +12,6 @@ export interface Column {
 	name: string;
 	dataType: string;
 	isNullable: boolean;
-	udtName: string;
 	defaultValue: string | null;
 	description: string | null;
 	isArray: boolean;

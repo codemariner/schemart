@@ -1,20 +1,9 @@
-// generated from schemart
+/* eslint-disable import/no-extraneous-dependencies */
+import { Interval } from 'luxon';
 
-import * as rt from 'runtypes';
-
-export const GenderEnum = rt.Union(rt.Literal('male'), rt.Literal('female'));
-export type Gender = 'male' | 'female';
-
-export const Users = rt.Record({
-	id: rt.Number,
-	name: rt.String,
-	email: rt.String,
-	emailValidated: rt.Optional(rt.Boolean.Or(rt.Null)),
-	availability: rt.Optional(rt.Unknown.Or(rt.Null)),
-	birthDay: rt.Optional(rt.String.Or(rt.Null)),
-	gender: rt.Optional(GenderEnum.Or(rt.Null)),
-	metadata: rt.Optional(rt.Unknown.Or(rt.Null)),
-	createAt: rt.String,
-	updatedAt: rt.String,
-});
-export type Users = rt.Static<typeof Users>;
+const start = new Date('2021-10-31 00:00:00');
+const end = new Date('2021-11-01 00:00:00');
+const i = Interval.fromDateTimes(start, end);
+i.end.minus(1000);
+console.log(i.end);
+console.log(i instanceof Interval);

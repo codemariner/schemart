@@ -8,6 +8,14 @@ import { Enum, SchemaInfo, TableWithColumns } from '../schema-info';
 import { SchemaProvider } from '../schema-provider';
 
 type MapToRuntypeFn = SchemaProvider['mapToRuntype'];
+type GetDataTypeFn = SchemaProvider['getDataType'];
+
+export interface GenerateOpts {
+	config: Config;
+	schemaInfo: SchemaInfo;
+	mapToRuntype: MapToRuntypeFn;
+	getDataType: GetDataTypeFn;
+}
 
 const debug = baseDebug.extend('type-generators/runtypes');
 
@@ -48,7 +56,8 @@ function transformTable(
 	config: Config,
 	table: TableWithColumns,
 	schemaInfo: SchemaInfo,
-	mapToRuntype: MapToRuntypeFn
+	mapToRuntype: MapToRuntypeFn,
+	getDataType: GetDataTypeFn
 ): string {
 	const tableName = capitalize(camelcase(table.tableName));
 	let result = `export const ${tableName} = `;
@@ -56,14 +65,19 @@ function transformTable(
 	table.columns.forEach((col) => {
 		const name = camelcase(col.name);
 		const optional = col.isNullable;
-		let value = mapToRuntype(config, schemaInfo, col);
+
+		const columnDataType = getDataType(config, col);
+		const customType = config.typeMappings?.[columnDataType]?.runtype;
+
+		let valueType = customType || mapToRuntype(config, schemaInfo, col);
+
 		if (optional) {
-			value = `rt.Optional(${value}.Or(rt.Null))`;
+			valueType = `rt.Optional(${valueType}.Or(rt.Null))`;
 		}
 		if (col.description) {
 			result += `  // ${col.description.replaceAll('\n', ' ').trim()}`;
 		}
-		result += `  ${name}: ${value},\n`;
+		result += `  ${name}: ${valueType},\n`;
 	});
 	result += ObjEndTag();
 	result += ';\n';
@@ -71,15 +85,17 @@ function transformTable(
 	return result;
 }
 
-export function generate(
-	config: Config,
-	schemaInfo: SchemaInfo,
-	mapToRuntype: MapToRuntypeFn
-): string {
+const header = `
+// generated from schemart
+import * as rt from 'runtypes';
+`;
+
+export function generate({ config, schemaInfo, mapToRuntype, getDataType }: GenerateOpts): string {
 	debug('generating type specs');
 	const { enums, tables } = schemaInfo;
-	let result = '// generated from schemart\n\n';
-	result += "import * as rt from 'runtypes';\n\n";
+	let result = header;
+	result += `${config.content ?? ''}\n`;
+
 	enums?.forEach((enumInfo) => {
 		debug('transforming enum', enumInfo.name);
 		if (config.enumsAsTypes) {
@@ -88,9 +104,10 @@ export function generate(
 			result += transformEnum(enumInfo);
 		}
 	});
+
 	tables?.forEach((table) => {
 		debug('transforming table', table.tableName);
-		result += transformTable(config, table, schemaInfo, mapToRuntype);
+		result += transformTable(config, table, schemaInfo, mapToRuntype, getDataType);
 	});
 	return result;
 }

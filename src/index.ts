@@ -2,18 +2,26 @@ import fs from 'fs';
 import path from 'path';
 
 import yaml from 'js-yaml';
+import { Boolean, Optional, Record, Static, String } from 'runtypes';
 
 import { Config } from './config';
 import debug from './debug';
 import { schemaProviders } from './schema-providers';
-import { mapToRuntype } from './schema-providers/postgres/runtypes';
 import { generate as generateRuntypes } from './type-generators/runtypes';
 
-export async function generate(configPath: string, databaseUri?: string): Promise<void> {
-	const contents = (await fs.promises.readFile(configPath)).toString('utf-8');
+export const GenerateOpts = Record({
+	configFile: String,
+	dbUri: Optional(String),
+	dryRun: Optional(Boolean),
+});
+export type GenerateOpts = Static<typeof GenerateOpts>;
+
+export async function generate(opts: GenerateOpts): Promise<void> {
+	const { configFile } = opts;
+	const contents = (await fs.promises.readFile(configFile)).toString('utf-8');
 	const rawConfig = yaml.load(contents);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const dbUri = databaseUri ?? (rawConfig as any).dbUri;
+	const dbUri = opts.dbUri ?? (rawConfig as any).dbUri;
 	if (!dbUri) {
 		throw new Error(
 			'database connection string not specified. Please provide `dbUri` in the configuration or as a command options.'
@@ -43,10 +51,20 @@ export async function generate(configPath: string, databaseUri?: string): Promis
 	let result = '// no data';
 	if (config.runtimeType === 'runtypes') {
 		// do runtypes generation
-		result = generateRuntypes(config, schemaInfo, mapToRuntype);
+		result = generateRuntypes({
+			config,
+			schemaInfo,
+			mapToRuntype: schemaProvider.mapToRuntype,
+			getDataType: schemaProvider.getDataType,
+		});
 	}
 
-	const file = path.join(path.dirname(configPath), config.outfile);
+	const file = path.join(path.dirname(configFile), config.outfile);
 	debug('writing schema def to file', file);
 	await fs.promises.writeFile(file, result, 'utf-8');
 }
+
+generate({
+	configFile: path.join(__dirname, '../tmp/schemart.yaml'),
+	dbUri: 'postgres://postgres:postgres@localhost:5432/schemart',
+});
