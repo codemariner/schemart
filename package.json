@@ -1,6 +1,6 @@
 {
 	"name": "schemart",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"author": "Scott Sayles",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -91,7 +91,11 @@
 		}
 	},
 	"keywords": [
-		"oclif"
+		"schema",
+		"typescript",
+		"sql",
+		"postgres",
+		"runtypes"
 	],
 	"lint-staged": {
 		"*.{ts,js,json,yaml,yml}": [

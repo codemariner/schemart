@@ -1,7 +1,7 @@
 SchemaRT
 ========
 
-Generate runtime types from your database schema. Currently, this supports generating runtime type definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL.
+Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime type definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL.
 
 ### Example
 Given the following table:
@@ -100,6 +100,16 @@ const users:User[] = rows.map((row) => User.check(row));
 ```
 
 
+## Install
+
+```
+npm install -g schemart
+```
+or 
+```
+yarn add schemart
+```
+
 <!--
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart)
@@ -114,3 +124,4 @@ const users:User[] = rows.map((row) => User.check(row));
 - Add support for other runtime types like:
   - valita
   - suretype
+- Add more documentation
