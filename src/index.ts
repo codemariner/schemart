@@ -63,4 +63,3 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 	debug('writing schema def to file', file);
 	await fs.promises.writeFile(file, result, 'utf-8');
 }
-

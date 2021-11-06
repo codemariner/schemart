@@ -24,6 +24,7 @@ const ObjStartTag = (type: string): string => `${type}({\n`;
 const ObjEndTag = (): string => `})`;
 
 function transformEnum(enumInfo: Enum): string {
+	debug('transformEnum', enumInfo);
 	const name = capitalize(camelcase(enumInfo.name));
 	let result = `export enum ${name} {\n`;
 	result += enumInfo.values.map((value): string => `  ${value}`).join(',\n');
@@ -37,6 +38,7 @@ function transformEnum(enumInfo: Enum): string {
 }
 
 function transformEnumAsUnion(enumInfo: Enum): string {
+	debug('transformEnumAsUnion', enumInfo);
 	const name = capitalize(camelcase(enumInfo.name));
 	let result = `export const ${name}Enum = rt.Union(\n`;
 	enumInfo.values.forEach((val, idx) => {
@@ -46,9 +48,7 @@ function transformEnumAsUnion(enumInfo: Enum): string {
 		result += `  rt.Literal('${val}')`;
 	});
 	result += '\n);\n';
-	result += `export type ${name} = \n`;
-	result += enumInfo.values.map((val) => `  '${val}'`).join(' |\n');
-	result += ';\n\n';
+	result += `export type ${name} = rt.Static<typeof ${name}Enum>;\n\n`;
 	return result;
 }
 
