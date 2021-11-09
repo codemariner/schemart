@@ -1,8 +1,8 @@
 import camelcase from 'lodash.camelcase';
-import capitalize from 'lodash.capitalize';
 
 import baseDebug from '../../debug';
 import { SchemaProvider } from '../../schema-provider';
+import { capitalize } from '../../util';
 
 import { PostgresColumn, PostgresConfig, PostgresSchemaInfo } from './types';
 

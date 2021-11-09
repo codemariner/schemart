@@ -16,6 +16,18 @@ CREATE TABLE public.users (
 	CONSTRAINT "UK__users__K2_k3" UNIQUE (name, email)
 );
 
+CREATE TABLE public.blog_posts (
+	id serial NOT NULL,
+	user_id int4 NOT NULL,
+	subject varchar(250) NOT NULL,
+	content text NULL,
+	create_at timestamptz(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
+	updated_at timestamptz(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
+	CONSTRAINT "PK__blog_posts__K1" PRIMARY KEY (id),
+	CONSTRAINT "FK__blog_posts__K2__users__K1" FOREIGN KEY (user_id) REFERENCES users(id),
+	CONSTRAINT "UK__blog_posts__K3" UNIQUE (subject)
+);
+
 INSERT INTO public.users(
 	name,
 	email
@@ -43,3 +55,14 @@ INSERT INTO public.users(
     'male',
     '{"foo":"bar"}'
 );
+
+INSERT INTO public.blog_posts (
+	user_id,
+	subject,
+	content
+) VALUES (
+	1,
+	'test post',
+	'some content'
+);
+

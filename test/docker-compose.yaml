@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
   mysql:
-    image: mysql:8
+    image: mysql:5
     ports:
       - '3307:3306'
     environment:

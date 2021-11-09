@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import camelcase from 'lodash.camelcase';
-import capitalize from 'lodash.capitalize';
 
 import { Config } from '../config';
 import baseDebug from '../debug';
 import { Enum, SchemaInfo, TableWithColumns } from '../schema-info';
 import { SchemaProvider } from '../schema-provider';
+import { camelize } from '../util';
 
 type MapToRuntypeFn = SchemaProvider['mapToRuntype'];
 type GetDataTypeFn = SchemaProvider['getDataType'];
@@ -25,7 +25,7 @@ const ObjEndTag = (): string => `})`;
 
 function transformEnum(enumInfo: Enum): string {
 	debug('transformEnum', enumInfo);
-	const name = capitalize(camelcase(enumInfo.name));
+	const name = camelize(enumInfo.name);
 	let result = `export enum ${name} {\n`;
 	result += enumInfo.values.map((value): string => `  ${value}`).join(',\n');
 	result += '\n}\n';
@@ -39,7 +39,7 @@ function transformEnum(enumInfo: Enum): string {
 
 function transformEnumAsUnion(enumInfo: Enum): string {
 	debug('transformEnumAsUnion', enumInfo);
-	const name = capitalize(camelcase(enumInfo.name));
+	const name = camelize(enumInfo.name);
 	let result = `export const ${name}Enum = rt.Union(\n`;
 	enumInfo.values.forEach((val, idx) => {
 		if (idx > 0) {
@@ -59,7 +59,7 @@ function transformTable(
 	mapToRuntype: MapToRuntypeFn,
 	getDataType: GetDataTypeFn
 ): string {
-	const tableName = capitalize(camelcase(table.tableName));
+	const tableName = camelize(table.tableName);
 	let result = `export const ${tableName} = `;
 	result += ObjStartTag('rt.Record');
 	table.columns.forEach((col) => {
@@ -87,6 +87,7 @@ function transformTable(
 
 const header = `
 // generated from schemart
+/* eslint-disable import/no-extraneous-dependencies */
 import * as rt from 'runtypes';
 `;
 
