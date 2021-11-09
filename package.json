@@ -1,6 +1,6 @@
 {
 	"name": "schemart",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"author": "Scott Sayles",
 	"license": "MIT",
 	"main": "dist/index.js",
