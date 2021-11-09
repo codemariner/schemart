@@ -151,10 +151,3 @@ export async function getDbSchema(config: MysqlConfig): Promise<MysqlSchemaInfo>
 	});
 }
 
-getDbSchema({
-	databaseType: 'mysql',
-	excludeTables: ['schema_migrations'],
-	outfile: './schema-foo.ts',
-	runtimeType: 'runtypes',
-	dbUri: 'mysql://root@localhost:3307/schemart',
-});
