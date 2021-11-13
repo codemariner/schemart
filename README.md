@@ -1,7 +1,7 @@
 SchemaRT
 ========
 
-Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime type definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL.
+Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime type definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL and MySQL.
 
 ### Example
 Given the following table:
@@ -58,9 +58,7 @@ export const GenderEnum = rt.Union(
   rt.Literal('male'),
   rt.Literal('female')
 );
-export type Gender = 
-  'male' |
-  'female';
+export type Gender = Static<typeof GenderEnum>;
 
 export const User = rt.Record({
   id: rt.Number,
@@ -118,10 +116,13 @@ yarn add schemart
 -->
 
 ## TODO
+- Add general logging output
+- Add config file generation support
+- Add more documentation
 - Add support for other databases
-  - MySQL
   - MSSQL
+- Enhance mysql support
+- Expose programatic api including ability to pass in client instance.
 - Add support for other runtime types like:
   - valita
   - suretype
-- Add more documentation

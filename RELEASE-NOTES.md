@@ -1,3 +1,6 @@
+## 0.1.7
+- Completed initial MySQL support.
+- Added examples (see examples directory).
 ## 0.1.6
 - Fix excludeTables handling.
 ## 0.1.4
