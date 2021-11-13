@@ -15,7 +15,14 @@ export interface Index {
 
 export interface Column {
 	name: string;
+	/**
+	 * Name of the data type like "timestamp with time zone"
+	 */
 	dataType: string;
+	/**
+	 * Native/udt datatype name like "timestamptz"
+	 */
+	rawType: string;
 	isNullable: boolean;
 	defaultValue?: string | null;
 	description?: string | null;

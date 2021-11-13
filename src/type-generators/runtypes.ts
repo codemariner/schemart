@@ -86,7 +86,10 @@ function transformTable(
 		if (col.description) {
 			commentLines.push(`${col.description.replaceAll('\n', ' ').trim()}`);
 		}
-		if (config.includeExtraInfo) {
+		if (config.extraInfo?.dataType) {
+			commentLines.push(`type: ${col.rawType}`);
+		}
+		if (config.extraInfo?.indexes) {
 			col.indexes?.forEach((index) => {
 				commentLines.push(`idx: ${index.name}`);
 			});

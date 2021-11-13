@@ -85,6 +85,7 @@ async function getColumns(
 		dataType: row.data_type,
 		isNullable: row.is_nullable === 'YES',
 		udtName: row.udt_name,
+		rawType: row.udt_name,
 		defaultValue: row.column_default,
 		description: row.description,
 		isArray: row.data_type === 'ARRAY',

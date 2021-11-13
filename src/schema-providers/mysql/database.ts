@@ -37,6 +37,7 @@ async function getColumns(db: Db, _config: MysqlConfig, tableName: string): Prom
 	return (rows as mysql.RowDataPacket[]).map((row: any) => ({
 		name: row.column_name,
 		dataType: row.data_type,
+		rawType: row.data_type,
 		isNullable: row.is_nullable === 'YES',
 		defaultValue: row.column_default,
 		description: row.column_comment,

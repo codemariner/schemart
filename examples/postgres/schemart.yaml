@@ -2,7 +2,9 @@ databaseType: 'postgres'
 outfile: './schema.ts'
 runtimeType: 'runtypes'
 includeViews: false
-includeExtraInfo: true
+extraInfo:
+  indexes: true
+  dataType: true
 enumsAsTypes: true
 excludeTables:
   - schema_migrations

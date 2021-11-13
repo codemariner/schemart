@@ -5,6 +5,7 @@ import {
 	Dictionary,
 	Literal,
 	Optional,
+	Partial,
 	Record,
 	Static,
 	String,
@@ -20,13 +21,18 @@ const TypeMap = Record({
 });
 const TypeMappings = Dictionary(TypeMap, String);
 
+const ExtraInfo = Partial({
+	indexes: Boolean,
+	dataType: Boolean,
+});
+
 export const Config = Record({
 	databaseType: DatabaseType,
 	runtimeType: RuntimeType,
 	outfile: String,
 	dbUri: Optional(String),
 	includeViews: Optional(Boolean),
-	includeExtraInfo: Optional(Boolean),
+	extraInfo: Optional(ExtraInfo),
 	excludeTables: Optional(Array(String)),
 	enumsAsTypes: Optional(Boolean),
 	content: Optional(String),

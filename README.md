@@ -19,10 +19,14 @@ CREATE TABLE app.user (
 and schemart YAML configuration file with type customizations:
 ```yaml
 databaseType: 'postgres'
+schema: 'app'
 outfile: './schema.ts'
 runtimeType: 'runtypes'
 enumsAsTypes: true
-schema: 'app'
+includeViews: false
+extraInfo:
+  indexes: false
+  dataType: false
 excludeTables:
   - schema_migrations
 content:
@@ -64,7 +68,7 @@ export const User = rt.Record({
   id: rt.Number,
   email: rt.String,
   availability: rt.Optional(IntervalRt.Or(rt.Null)), // custom Interval type
-  gender: rt.Optional(GenderEnum.Or(rt.Null)) // auto generated enum
+  gender: rt.Optional(GenderEnum.Or(rt.Null))
 });
 export type User = rt.Static<typeof User>;
 ```
@@ -122,6 +126,9 @@ yarn add schemart
 - Add support for other databases
   - MSSQL
 - Enhance mysql support
+  - add index info support
+  - ensure proper type mapping
+  - validate against mysql 8
 - Expose programatic api including ability to pass in client instance.
 - Add support for other runtime types like:
   - valita
