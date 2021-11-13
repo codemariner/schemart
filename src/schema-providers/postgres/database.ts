@@ -92,22 +92,26 @@ async function getTables(db: Db, config: PostgresConfig): Promise<Table[]> {
 	let args = [schemaName, tableTypes];
 
 	let query = `
-        SELECT table_name,
-               table_type
-          FROM information_schema.tables
-         WHERE table_schema = $1
-           AND table_type = ANY($2)`;
+        SELECT t.table_name,
+               t.table_type,
+               pg_catalog.obj_description(pgc.oid, 'pg_class') AS "description"
+          FROM information_schema.tables t
+         INNER JOIN pg_catalog.pg_class pgc
+            ON t.table_name = pgc.relname 
+         WHERE t.table_schema = $1
+           AND t.table_type = ANY($2)`;
 
 	if (config.excludeTables?.length) {
 		// != ANY($3) does not work
 		const params = config.excludeTables.map((_, idx) => `$${idx + 3}`);
 		query += `
-           AND table_name NOT IN (${params.join(',')})`;
+           AND t.table_name NOT IN (${params.join(',')})`;
 		args = args.concat(config.excludeTables);
 	}
 	const result = await db.query(query, args);
 
 	return result.rows.map((row) => ({
+		description: row.description,
 		tableName: row.table_name,
 		tableType: row.table_type,
 	}));

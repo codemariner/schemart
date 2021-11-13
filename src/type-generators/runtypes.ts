@@ -60,7 +60,14 @@ function transformTable(
 	getDataType: GetDataTypeFn
 ): string {
 	const tableName = camelize(table.tableName);
-	let result = `export const ${tableName} = `;
+	let result = '';
+	if (table.description) {
+		result += `
+/**
+ * ${table.description}
+ */\n`;
+	}
+	result += `export const ${tableName} = `;
 	result += ObjStartTag('rt.Record');
 	table.columns.forEach((col) => {
 		const name = camelcase(col.name);
@@ -75,7 +82,7 @@ function transformTable(
 			valueType = `rt.Optional(${valueType}.Or(rt.Null))`;
 		}
 		if (col.description) {
-			result += `  // ${col.description.replaceAll('\n', ' ').trim()}`;
+			result += `  /** ${col.description.replaceAll('\n', ' ').trim()} */\n`;
 		}
 		result += `  ${name}: ${valueType},\n`;
 	});
