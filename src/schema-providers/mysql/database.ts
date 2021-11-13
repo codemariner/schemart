@@ -12,10 +12,12 @@ type Db = PoolConnection & {
 	dbName: string;
 };
 
+const ENUM_VALUE_REGEX = /'([^']*)'/g;
+
 const debug = baseDebug.extend('schema-providers/postrgres');
 
 async function getColumns(db: Db, _config: MysqlConfig, tableName: string): Promise<MysqlColumn[]> {
-	const result = await db.query(
+	const [rows] = await db.query(
 		`
         SELECT 
             column_name,
@@ -32,13 +34,12 @@ async function getColumns(db: Db, _config: MysqlConfig, tableName: string): Prom
 		[tableName, db.dbName]
 	);
 
-	return result[1].map((row: any) => ({
+	return (rows as mysql.RowDataPacket[]).map((row: any) => ({
 		name: row.column_name,
 		dataType: row.data_type,
 		isNullable: row.is_nullable === 'YES',
-		udtName: row.udt_name,
 		defaultValue: row.column_default,
-		description: row.description,
+		description: row.column_comment,
 		isArray: row.data_type === 'ARRAY',
 	}));
 }
@@ -48,6 +49,7 @@ async function getEnums(db: Db, _config: MysqlConfig): Promise<Enum[]> {
 		`
         SELECT 
             column_name,
+            column_type,
             data_type,
             is_nullable,
             column_default,
@@ -55,31 +57,21 @@ async function getEnums(db: Db, _config: MysqlConfig): Promise<Enum[]> {
             extra
         FROM information_schema.columns
        WHERE table_schema  = ?
-         AND data_type = 'enum'
+         AND data_type IN ('enum', 'set')
        ORDER BY ORDINAL_POSITION`,
 		[db.dbName]
 	);
 
-	// const vals = (rows as mysql.RowDataPacket[]).map((row) => {
-	// const values = (row.column_type as string).matchAll(/'(\w*)'/);
-	// return {
-	// name: row.column_name,
-	// values,
-	// }
-	// })
-	const mapped = (rows as mysql.RowDataPacket[]).reduce(
-		(accum: { [key: string]: string[] }, row: any) => {
-			// eslint-disable-next-line no-param-reassign
-			(accum[row.column_name] ??= []).push(row.column_name);
-			return accum;
-		},
-		{}
-	);
-
-	return Object.entries(mapped).map(([key, value]) => ({
-		name: key,
-		values: value,
-	}));
+	const enums = (rows as mysql.RowDataPacket[]).map((row: any) => {
+		const values = (row.column_type as string)
+			.match(ENUM_VALUE_REGEX)
+			?.map((value) => value.replace(/'/g, ''));
+		return {
+			name: row.column_name,
+			values: values ?? [],
+		};
+	});
+	return enums;
 }
 
 async function getTables(db: Db, config: MysqlConfig): Promise<Table[]> {
@@ -150,4 +142,3 @@ export async function getDbSchema(config: MysqlConfig): Promise<MysqlSchemaInfo>
 		};
 	});
 }
-

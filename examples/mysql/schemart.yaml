@@ -1,0 +1,18 @@
+databaseType: 'mysql'
+outfile: './schema.ts'
+runtimeType: 'runtypes'
+enumsAsTypes: false
+excludeTables:
+  - schema_migrations
+content: |
+  function isDate(value:unknown): value is Date {
+    return value instanceof Date;
+  }
+
+  const DateRt = rt.Unknown.withGuard(isDate);
+
+typeMappings:
+  'date':
+    runtype: DateRt
+  'datetime':
+    runtype: DateRt

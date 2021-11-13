@@ -99,8 +99,8 @@ async function getTables(db: Db, config: PostgresConfig): Promise<Table[]> {
            AND table_type = ANY($2)`;
 
 	if (config.excludeTables?.length) {
-        // != ANY($3) does not work
-        const params = config.excludeTables.map((_, idx) => `$${idx + 3}`);
+		// != ANY($3) does not work
+		const params = config.excludeTables.map((_, idx) => `$${idx + 3}`);
 		query += `
            AND table_name NOT IN (${params.join(',')})`;
 		args = args.concat(config.excludeTables);

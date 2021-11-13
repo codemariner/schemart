@@ -87,8 +87,8 @@ function transformTable(
 
 const header = `
 // generated from schemart
-/* eslint-disable import/no-extraneous-dependencies */
 import * as rt from 'runtypes';
+
 `;
 
 export function generate({ config, schemaInfo, mapToRuntype, getDataType }: GenerateOpts): string {
