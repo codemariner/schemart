@@ -1,3 +1,6 @@
+## 0.1.8
+- Finish and fix comment/description generation.
+- Implement dry run mode. Results will be printed to stdout rather than written to a file.
 ## 0.1.7
 - Completed initial MySQL support.
 - Added examples (see examples directory).
