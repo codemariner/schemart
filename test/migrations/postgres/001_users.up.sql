@@ -15,6 +15,8 @@ CREATE TABLE public.users (
 	CONSTRAINT "PK__users__K1" PRIMARY KEY (id),
 	CONSTRAINT "UK__users__K2_k3" UNIQUE (name, email)
 );
+COMMENT ON TABLE "users" IS 'A customer user account.';
+COMMENT ON COLUMN "user"."availability" IS 'The range of time the user is considered available.';
 
 CREATE TABLE public.blog_posts (
 	id serial NOT NULL,

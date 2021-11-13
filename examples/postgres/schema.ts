@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 // generated from schemart
 import * as rt from 'runtypes';
 

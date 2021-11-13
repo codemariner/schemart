@@ -94,6 +94,7 @@
 		"typescript",
 		"sql",
 		"postgres",
+		"mysql",
 		"runtypes"
 	],
 	"lint-staged": {
