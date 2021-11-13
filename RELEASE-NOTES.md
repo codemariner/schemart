@@ -1,3 +1,10 @@
+## 0.1.9
+- Add support for generating extra information in comments.
+  ```yaml
+  extraInfo:
+    indexes: true
+	dataType: true
+  ```
 ## 0.1.8
 - Finish and fix comment/description generation.
 - Implement dry run mode. Results will be printed to stdout rather than written to a file.
