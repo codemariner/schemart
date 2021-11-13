@@ -2,7 +2,7 @@ import Bluebird from 'bluebird';
 import { Pool } from 'pg';
 
 import baseDebug from '../../debug';
-import { Enum, Table } from '../../schema-info';
+import { Enum, Index, Table } from '../../schema-info';
 
 import { PostgresColumn, PostgresConfig, PostgresSchemaInfo } from './types';
 
@@ -12,6 +12,42 @@ const debug = baseDebug.extend('schema-providers/postrgres');
 
 function getSchemaName(name?: string): string {
 	return name ?? 'public';
+}
+
+async function getIndexes(
+	db: Db,
+	config: PostgresConfig,
+	tableName: string
+): Promise<Record<string, Index[]>> {
+	const result = await db.query(
+		`
+        SELECT t.relname as table_name,
+               i.relname as index_name,
+               a.attname as column_name,
+               st.schemaname
+          FROM pg_class t,
+               pg_class i,
+               pg_index ix,
+               pg_attribute a,
+               pg_catalog.pg_statio_all_tables as st
+         WHERE t.oid = ix.indrelid
+           AND i.oid = ix.indexrelid
+           AND a.attrelid = t.oid
+           AND a.attnum = ANY(ix.indkey)
+           AND t.relkind = 'r'
+           AND st.relid = t.oid
+           AND st.schemaname = $1
+           AND t.relname = $2
+        `,
+		[getSchemaName(config.schema), tableName]
+	);
+	return result.rows.reduce((accum, row) => {
+		// eslint-disable-next-line no-param-reassign
+		(accum[row.column_name] ??= []).push({
+			name: row.index_name,
+		});
+		return accum;
+	}, {});
 }
 
 async function getColumns(
@@ -42,6 +78,8 @@ async function getColumns(
 		[tableName, getSchemaName(config.schema)]
 	);
 
+	const indexesByColumn = await getIndexes(db, config, tableName);
+
 	return result.rows.map((row) => ({
 		name: row.column_name,
 		dataType: row.data_type,
@@ -50,6 +88,7 @@ async function getColumns(
 		defaultValue: row.column_default,
 		description: row.description,
 		isArray: row.data_type === 'ARRAY',
+		indexes: indexesByColumn[row.column_name],
 	}));
 }
 

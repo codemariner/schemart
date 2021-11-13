@@ -9,6 +9,10 @@ export interface Enum {
 	values: string[];
 }
 
+export interface Index {
+	name: string;
+}
+
 export interface Column {
 	name: string;
 	dataType: string;
@@ -16,6 +20,7 @@ export interface Column {
 	defaultValue?: string | null;
 	description?: string | null;
 	isArray: boolean;
+	indexes?: Index[] | null;
 }
 
 export type TableWithColumns<C extends Column = Column> = Table & {

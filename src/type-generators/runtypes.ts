@@ -81,8 +81,20 @@ function transformTable(
 		if (optional) {
 			valueType = `rt.Optional(${valueType}.Or(rt.Null))`;
 		}
+
+		const commentLines = [];
 		if (col.description) {
-			result += `  /** ${col.description.replaceAll('\n', ' ').trim()} */\n`;
+			commentLines.push(`${col.description.replaceAll('\n', ' ').trim()}`);
+		}
+		if (config.includeExtraInfo) {
+			col.indexes?.forEach((index) => {
+				commentLines.push(`idx: ${index.name}`);
+			});
+		}
+		if (commentLines.length) {
+			result += `  /**\n`;
+			result += commentLines.map((l) => `   * ${l}\n`).join('');
+			result += `   */\n`;
 		}
 		result += `  ${name}: ${valueType},\n`;
 	});
