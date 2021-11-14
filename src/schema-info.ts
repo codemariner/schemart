@@ -1,5 +1,5 @@
 export interface Table {
-	description?: string;
+	description?: string | null;
 	tableName: string;
 	tableType: string;
 }
