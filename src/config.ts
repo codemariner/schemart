@@ -34,7 +34,6 @@ export const Config = Record({
 	includeViews: Optional(Boolean),
 	extraInfo: Optional(ExtraInfo),
 	excludeTables: Optional(Array(String)),
-	enumsAsTypes: Optional(Boolean),
 	content: Optional(String),
 	typeMappings: Optional(TypeMappings),
 });

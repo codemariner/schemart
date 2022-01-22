@@ -1,0 +1,30 @@
+databaseType: 'mssql'
+outfile: './schema-mssql.ts'
+runtimeType: 'runtypes'
+excludeTables:
+  - schema_migrations
+  - MSreplication_options
+  - spt_fallback_db
+  - spt_fallback_dev
+  - spt_fallback_usg
+  - spt_monitor
+content: |
+  function isDate(value:unknown): value is Date {
+    return value instanceof Date;
+  }
+
+  const DateRt = rt.Unknown.withGuard(isDate);
+
+typeMappings:
+  'date':
+    runtype: DateRt
+  'timestamp':
+    runtype: DateRt
+  '_tsrange':
+    runtype: rt.Array(IntervalRt)
+  'tsrange':
+    runtype: IntervalRt
+  'tstzrange':
+    runtype: IntervalRt
+  'daterange':
+    runtype: IntervalRt

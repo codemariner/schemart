@@ -19,6 +19,14 @@ services:
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: SA_Pass!234
+
   db-migrate-postgres:
     image: migrate/migrate
     depends_on:
@@ -54,3 +62,22 @@ services:
           -path /src/migrations \
           -database "mysql://mysql:mysql@tcp(mysql:3306)/schemart?x-tls-insecure-skip-verify=true" \
           up
+
+  db-migrate-mssql:
+    image: migrate/migrate
+    depends_on:
+      - mssql
+    volumes:
+      - ./bin:/src/bin
+      - ./migrations/mssql:/src/migrations
+    entrypoint: /bin/ash
+    command:
+      - -c
+      - |
+        /src/bin/wait-for-it.sh mssql:1433 -- echo "mssql running"
+        migrate \
+          -verbose \
+          -path /src/migrations \
+          -database sqlserver://sa:SA_Pass!234@mssql:1433/schemart \
+          up
+
