@@ -11,3 +11,5 @@ export const PostgresSchemaProvider: SchemaProvider<PostgresConfig> = {
 	mapToRuntype,
 	getDataType,
 };
+
+export default PostgresSchemaProvider;

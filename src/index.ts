@@ -6,8 +6,9 @@ import { Boolean, Optional, Record, Static, String } from 'runtypes';
 
 import { Config } from './config';
 import debug from './debug';
-import { schemaProviders } from './schema-providers';
 import { generate as generateRuntypes } from './type-generators/runtypes';
+import { DatabaseTypeNames } from './schema-providers/database-types';
+import { getSchemaProvider } from './schema-providers';
 
 export const GenerateOpts = Record({
 	configFile: String,
@@ -35,16 +36,17 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 	debug('read config', uncheckedConfig);
 	const { databaseType } = Config.check(uncheckedConfig);
 
-	const schemaProvider = schemaProviders[databaseType];
+	debug('lookup schema provider for', databaseType);
+	const schemaProvider = getSchemaProvider(databaseType);
 	if (!schemaProvider) {
 		throw new Error(
-			`Database type ${databaseType} from uri ${dbUri} is not supported. Please choose one of ${Object.keys(
-				schemaProviders
-			).join(',')}`
+			`Database type ${databaseType} from uri ${dbUri} is not supported. Please choose one of ${DatabaseTypeNames.join(
+				','
+			)}`
 		);
 	}
-	debug('using schema provider for', databaseType);
 
+	debug(schemaProvider);
 	const config = schemaProvider.configRt.check(uncheckedConfig);
 	const schemaInfo = await schemaProvider.getDbSchema(config);
 

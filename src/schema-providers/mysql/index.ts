@@ -11,3 +11,5 @@ export const MysqlSchemaProvider: SchemaProvider<MysqlConfig> = {
 	mapToRuntype,
 	getDataType,
 };
+
+export default MysqlSchemaProvider;

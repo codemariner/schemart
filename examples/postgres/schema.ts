@@ -29,7 +29,6 @@ export const Users = rt.Record({
 	/**
 	 * type: text
 	 * idx: UK__users__K2_k3
-	 * idx: name_users_birth_day
 	 */
 	name: rt.String,
 	/**
@@ -52,8 +51,6 @@ export const Users = rt.Record({
 	schedule: rt.Optional(rt.Array(IntervalRt).Or(rt.Null)),
 	/**
 	 * type: date
-	 * idx: users_birth_day
-	 * idx: name_users_birth_day
 	 */
 	birthDay: rt.Optional(DateRt.Or(rt.Null)),
 	/**

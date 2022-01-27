@@ -11,7 +11,7 @@ const CmdFlags = Record({
 type CmdFlags = Static<typeof CmdFlags>;
 
 export default class SchemaRTCommand extends Command {
-	static description = 'Generate Runtype and Typescript definitions of database schema.';
+	static description = 'Generate runtime and TypeScript definitions of your database schema.';
 
 	static flags: Flags.Input<any> = {
 		dryRun: Flags.boolean({

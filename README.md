@@ -1,7 +1,8 @@
-SchemaRT
-========
+![SchemaRT](https://user-images.githubusercontent.com/33014/144694351-d75a1e60-c507-48de-8abb-22cf2387e3d1.png)
 
-Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime type definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL and MySQL.
+---
+
+Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL and MySQL.
 
 ### Example
 Given the following table:
