@@ -1,6 +1,9 @@
-![SchemaRT](https://user-images.githubusercontent.com/33014/144694351-d75a1e60-c507-48de-8abb-22cf2387e3d1.png)
+<p align="center">
+<img src="https://user-images.githubusercontent.com/33014/151277543-07b92bf4-6db7-4620-ad78-d0ce2e36d98b.png"/>
+</p>
 
 ---
+[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart) [![Downloads/week](https://img.shields.io/npm/dw/schemart.svg)](https://npmjs.org/package/schemart) [![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
 
 Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL and MySQL.
 
@@ -113,24 +116,52 @@ or
 yarn add schemart
 ```
 
-<!--
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart)
-[![Downloads/week](https://img.shields.io/npm/dw/schemart.svg)](https://npmjs.org/package/schemart)
-[![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
--->
+## Dependencies
 
-## TODO
-- Add general logging output
-- Add config file generation support
-- Add more documentation
-- Add support for other databases
-  - MSSQL
-- Enhance mysql support
-  - add index info support
-  - ensure proper type mapping
-  - validate against mysql 8
-- Expose programatic api including ability to pass in client instance.
-- Add support for other runtime types like:
-  - valita
-  - suretype
+SchemaRT does not install driver dependencies. You must install one or more of the following drivers:
+
+* 'pg' - for postgres
+* 'mysql2' - for mysql
+
+Note: mysql 8 is not fully supported.
+
+## Configuration
+
+Configuration options are stored in a YAML file.
+
+* `databaseType`: _required_ - Possible values: `postgres` or `mysql`
+* `outfile`: _required_ - path to the output file to write type definitions to. This can be a relative path (to the yaml file itself)
+* `runtimeType`: _required_ - The type of runtime type system to target. Currently, only `runtypes` is supported.
+* `dbUri`: _optional_ - Database connection string. This can be passed in through the command line.
+* `includeViews`: _optional_ boolean - Whether or not to include views when generating types. Defaults to `false`.
+* `extraInfo`: _optional_ - Whether or not to include additional information. Includes one of:
+  * `indexes`: _optional_ - include index names in field comments.
+  * `dataType`: _optional_ - include index names in field comments.
+* `excludeTables`: _optional_ array - A list of tables to exclude from type generation.
+* `enumsAsTypes`: _optional_ boolean - whether or not to generate enum values as a typescript enum or union literal type.
+* `content`: _optional_ - Custom content that will be inserted at the top of the generated ts file.
+* `typeMappings`: _optional_ - Map of database type names to target type information. Use this to provide custom type mapping from some database type. For example:
+  ```yaml
+  typeMappings:
+    tsrange:
+      runtype: IntervalRT
+  ```
+  * `{data type name}`:
+    * `runtype: Foo` 
+
+## CLI
+```
+USAGE
+  $ schemart
+
+OPTIONS
+  -d, --dryRun                 Perform all operations but don't actually generate output
+  -f, --configFile=configFile  (required) Path to configuration file
+  -u, --dbUri=dbUri            Database URI. Overrides value in configuration files.
+```
+
+## Debugging
+This uses the [debug](https://github.com/debug-js/debug) library. To enable debug output set the DEBUG environment variable:
+```
+DEBUG=schemart* schemart -f ./foo.yaml -u postgres://localhost
+```
