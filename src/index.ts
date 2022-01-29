@@ -25,7 +25,7 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 	const dbUri = opts.dbUri ?? (rawConfig as any).dbUri;
 	if (!dbUri) {
 		throw new Error(
-			'database connection string not specified. Please provide `dbUri` in the configuration or as a command options.'
+			'database connection string not specified. Please provide `dbUri` in the configuration or as a command option.'
 		);
 	}
 	const uncheckedConfig = {
