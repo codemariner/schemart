@@ -5,7 +5,7 @@ import { Column, SchemaInfo, TableWithColumns } from '../../schema-info';
 
 export const PostgresConfig = Config.And(
 	Record({
-	    enumsAsTypes: Optional(Boolean),
+		enumsAsTypes: Optional(Boolean),
 		schema: Optional(String),
 		includeForeignTables: Optional(String),
 	})

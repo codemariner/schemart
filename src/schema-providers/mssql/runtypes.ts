@@ -2,19 +2,19 @@ import baseDebug from '../../debug';
 import { SchemaProvider } from '../../schema-provider';
 import { camelize } from '../../util';
 
-import { MysqlColumn, MysqlConfig, MysqlSchemaInfo } from './types';
+import { MssqlColumn, MssqlConfig, MysqlSchemaInfo } from './types';
 
 const debug = baseDebug.extend('schema-providers/postgres');
 
 export const getDataType: SchemaProvider['getDataType'] = (
-	_config: MysqlConfig,
-	column: MysqlColumn
+	_config: MssqlConfig,
+	column: MssqlColumn
 ): string => column.dataType;
 
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
-	_config: MysqlConfig,
+	_config: MssqlConfig,
 	schemaInfo: MysqlSchemaInfo,
-	column: MysqlColumn
+	column: MssqlColumn
 ): string => {
 	debug('mapToRunType column', column.name);
 	const { enums } = schemaInfo;

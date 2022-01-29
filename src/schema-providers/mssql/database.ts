@@ -1,105 +1,115 @@
-import url from 'url';
-
 import Bluebird from 'bluebird';
-import mssql from 'ms'
+import mssql, { ConnectionPool } from 'mssql';
 
 import baseDebug from '../../debug';
-import { Enum, Table } from '../../schema-info';
+import { Table } from '../../schema-info';
 
 import { MssqlColumn, MssqlConfig, MysqlSchemaInfo } from './types';
 
-type Db = PoolConnection & {
-	dbName: string;
-};
-
-const ENUM_VALUE_REGEX = /'([^']*)'/g;
+type Db = ConnectionPool;
 
 const debug = baseDebug.extend('schema-providers/mssql');
 
-async function getColumns(db: Db, _config: MssqlConfig, tableName: string): Promise<MssqlColumn[]> {
-	const [rows] = await db.query(
-		`
-        SELECT 
-            column_name,
-            data_type,
-            is_nullable,
-            column_default,
-            column_comment,
-            extra
-        FROM information_schema.columns
-       WHERE table_name = ?
-         AND table_schema  = ?
-         AND data_type != 'enum'
-       ORDER BY ORDINAL_POSITION`,
-		[tableName, db.dbName]
-	);
+function getSchema(config: Pick<MssqlConfig, 'schema'>): string {
+	return config.schema ?? 'dbo';
+}
 
-	return (rows as mysql.RowDataPacket[]).map((row: any) => ({
-		name: row.column_name,
+function getColumnQuery(type: 'tables' | 'views', name: string, config: MssqlConfig): string {
+	const schemaName = getSchema(config);
+	return `
+    SELECT 
+        o.id,
+        c.name, 
+        e.value AS "description",
+        ISNULL(TYPE_NAME(c.system_type_id), y.name) AS data_type,
+        COLUMNPROPERTY(c.object_id, c.name, 'ordinal') AS position,
+        convert(nvarchar(4000), OBJECT_DEFINITION(c.default_object_id)) AS column_default,
+        convert(varchar(3), CASE c.is_nullable WHEN 1 THEN 'YES' ELSE 'NO' END)	AS is_nullable
+      FROM 
+        sysobjects o
+     INNER JOIN sys.${type} t
+        ON t.object_id = o.id 
+     INNER JOIN sys.columns c
+        ON c.object_id = o.id
+      LEFT jOIN sys.extended_properties e
+        ON e.major_id = o.id 
+           AND e.name = 'MS_Description' 
+           AND e.minor_id = c.column_id
+      LEFT JOIN sys.types y
+        ON c.user_type_id = y.user_type_id
+     WHERE 
+        t.schema_id = schema_id('${schemaName}')
+     AND t.name = '${name}'
+    `;
+}
+
+async function getColumns(config: MssqlConfig, tableName: string): Promise<MssqlColumn[]> {
+	let query = getColumnQuery('tables', tableName, config);
+	if (config.includeViews) {
+		query += `
+          UNION
+          ${getColumnQuery('views', tableName, config)}
+        `;
+	}
+	query += `ORDER BY position`;
+	const { recordset } = await mssql.query(query);
+
+	return recordset.map((row: any) => ({
+		name: row.name,
+		description: row.description,
 		dataType: row.data_type,
 		rawType: row.data_type,
 		isNullable: row.is_nullable === 'YES',
 		defaultValue: row.column_default,
-		description: row.column_comment,
-		isArray: row.data_type === 'ARRAY',
+		// no array types in mssql
+		isArray: false,
 	}));
 }
 
-async function getEnums(db: Db, _config: MssqlConfig): Promise<Enum[]> {
-	const [rows] = await db.query(
-		`
-        SELECT 
-            column_name,
-            column_type,
-            data_type,
-            is_nullable,
-            column_default,
-            column_comment,
-            extra
-        FROM information_schema.columns
-       WHERE table_schema  = ?
-         AND data_type IN ('enum', 'set')
-       ORDER BY ORDINAL_POSITION`,
-		[db.dbName]
-	);
-
-	const enums = (rows as mysql.RowDataPacket[]).map((row: any) => {
-		const values = (row.column_type as string)
-			.match(ENUM_VALUE_REGEX)
-			?.map((value) => value.replace(/'/g, ''));
-		return {
-			name: row.column_name,
-			values: values ?? [],
-		};
-	});
-	return enums;
-}
-
-async function getTables(db: Db, config: MssqlConfig): Promise<Table[]> {
-	const schemaName = db.dbName;
-	const tableTypes = ['BASE TABLE'];
-	if (config.includeViews) {
-		tableTypes.push('VIEW');
-	}
-	const args = [schemaName, tableTypes];
-
+function getTableQuery(type: 'tables' | 'views', config: MssqlConfig): string {
+	const schemaName = getSchema(config);
 	let query = `
-        SELECT table_name,
-               table_type
-          FROM information_schema.tables
-         WHERE table_schema = ?
-           AND table_type in (?)`;
-
+    SELECT 
+        o.id,
+        o.name, 
+        CASE o.type
+		  WHEN 'U' THEN 'BASE TABLE'
+		  WHEN 'V' THEN 'VIEW'
+        END AS table_type,
+        e.value AS "description" 
+      FROM 
+        sysobjects o
+     INNER JOIN sys.${type} t
+        ON t.object_id = o.id 
+      LEFT jOIN sys.extended_properties e
+        ON e.major_id = o.id 
+       AND e.name = 'MS_Description' 
+       AND e.minor_id = 0 
+     WHERE 
+        t.schema_id = schema_id('${schemaName}')
+    `;
 	if (config.excludeTables?.length) {
 		query += `
-           AND table_name NOT IN (?)`;
-		args.push(config.excludeTables);
+        AND t.name NOT IN ('${config.excludeTables.join("','")}')`;
 	}
-	const [rows] = await db.query(query, args);
+	return query;
+}
 
-	return (rows as mysql.RowDataPacket[]).map((row: any) => ({
-		tableName: row.table_name,
+async function getTables(_db: Db, config: MssqlConfig): Promise<Table[]> {
+	let query = getTableQuery('tables', config);
+
+	if (config.includeViews) {
+		query += `
+        UNION
+        ${getTableQuery('views', config)}
+        `;
+	}
+	const { recordset } = await mssql.query(query);
+
+	return recordset.map((row) => ({
+		tableName: row.name,
 		tableType: row.table_type,
+		description: row.description,
 	}));
 }
 
@@ -107,39 +117,33 @@ async function usingDb<T extends (db: Db) => Promise<unknown>>(
 	dbUri: string,
 	fn: T
 ): Promise<ReturnType<T>> {
-	const pool = await mysql.createPool({
-		uri: dbUri,
-	});
-	const dbName = url.parse(dbUri).path?.substr(1);
-	(pool as any).dbName = dbName;
+	const pool = await mssql.connect(dbUri);
+
 	const poolDisposer = Bluebird.resolve(pool)
 		.tap(async () => {
 			debug('connecting to database');
-			const client = await pool.getConnection();
+			await pool.connect();
 			debug('connected to database');
-			client.release();
 		})
 		.disposer(async (db) => {
 			debug('closing database pool');
-			await db.end();
+			await db.close();
 		});
 	return Bluebird.using(poolDisposer, fn);
 }
-// name, :flags, :to_address, :from_address, move: [:from_address, :to_address, user: [:site_entity]]
 
 export async function getDbSchema(config: MssqlConfig): Promise<MysqlSchemaInfo> {
 	debug('fetching database schema from', config.dbUri);
 	return usingDb(config.dbUri ?? '', async (db): Promise<MysqlSchemaInfo> => {
-		const [enums, tables] = await Promise.all([getEnums(db, config), getTables(db, config)]);
+		const [tables] = await Promise.all([getTables(db, config)]);
 		const tablesWithColumns = await Bluebird.map(tables, async (table) => {
-			const columns = await getColumns(db, config, table.tableName);
+			const columns = await getColumns(config, table.tableName);
 			return {
 				...table,
 				columns,
 			};
 		});
 		return {
-			enums,
 			tables: tablesWithColumns,
 		};
 	});
