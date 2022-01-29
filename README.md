@@ -3,9 +3,9 @@
 </p>
 
 ---
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart) [![Downloads/week](https://img.shields.io/npm/dw/schemart.svg)](https://npmjs.org/package/schemart) [![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
+[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart) [![Downloads/month](https://img.shields.io/npm/dw/schemart.svg)](https://npmjs.org/package/schemart) [![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
 
-Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL and MySQL.
+Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL, MySQL, and SQL Server.
 
 ### Example
 Given the following table:
@@ -89,7 +89,7 @@ type Users = {
 
 ## Why use this?
 
-You want to have generated TypeScript types that match your database schema **and** you want to ensure that data you've retrieved from the database matches those types. Particularly if you retrieve your data using raw queries.  For example:
+You want to have generated TypeScript types that match your database schema **and** you want to ensure that data you've retrieved from the database matches those types. Generated types won't matter if the data returned from your queries don't match those types at runtime. For example:
 
 ```typescript
 const User = Record({
@@ -105,31 +105,29 @@ const { rows } = db.query(' SELECT id, name, phone_number FROM users; ')
 const users:User[] = rows.map((row) => User.check(row));
 ```
 
-
 ## Install
 
 ```
-npm install -g schemart
+npm install --save-dev schemart
 ```
 or 
 ```
-yarn add schemart
+yarn add -D schemart
 ```
 
 ## Dependencies
 
 SchemaRT does not install driver dependencies. You must install one or more of the following drivers:
 
-* 'pg' - for postgres
-* 'mysql2' - for mysql
-
-Note: mysql 8 is not fully supported.
+* 'pg' - for PostgreSQL
+* 'mysql2' - for MySQL
+* 'mssql' - for SQL Server
 
 ## Configuration
 
 Configuration options are stored in a YAML file.
 
-* `databaseType`: _required_ - Possible values: `postgres` or `mysql`
+* `databaseType`: _required_ - Possible values: `postgres`, `mysql`, `mssql`
 * `outfile`: _required_ - path to the output file to write type definitions to. This can be a relative path (to the yaml file itself)
 * `runtimeType`: _required_ - The type of runtime type system to target. Currently, only `runtypes` is supported.
 * `dbUri`: _optional_ - Database connection string. This can be passed in through the command line.
@@ -138,7 +136,7 @@ Configuration options are stored in a YAML file.
   * `indexes`: _optional_ - include index names in field comments.
   * `dataType`: _optional_ - include index names in field comments.
 * `excludeTables`: _optional_ array - A list of tables to exclude from type generation.
-* `enumsAsTypes`: _optional_ boolean - whether or not to generate enum values as a typescript enum or union literal type.
+* `enumsAsTypes`: _optional_ boolean - whether or not to generate enum values as a typescript enum or union literal type. This is not supported in mssql.
 * `content`: _optional_ - Custom content that will be inserted at the top of the generated ts file.
 * `typeMappings`: _optional_ - Map of database type names to target type information. Use this to provide custom type mapping from some database type. For example:
   ```yaml
@@ -147,7 +145,16 @@ Configuration options are stored in a YAML file.
       runtype: IntervalRT
   ```
   * `{data type name}`:
-    * `runtype: Foo` 
+    * `runtype: {type name}` 
+
+#### postgres
+Additional configurations:
+ * `schema` - The name of the schema to target. This defaults to 'public'.
+ * `includeForeignTables` - whether or not to include foreign tables.
+
+#### mssql
+Additional configurations:
+ * `schema` - The name of the schema to target. This defaults to 'dbo'.
 
 ## CLI
 ```
