@@ -1,0 +1,11 @@
+databaseType: 'mysql'
+outfile: './schema.ts'
+runtimeType: 'runtypes'
+enumsAsTypes: false
+excludeTables:
+  - schema_migrations
+typeMappings:
+  'date':
+    runtype: srt.Date
+  'datetime':
+    runtype: srt.Date
