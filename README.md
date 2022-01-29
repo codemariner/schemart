@@ -3,7 +3,7 @@
 </p>
 
 ---
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart) [![Downloads/month](https://img.shields.io/npm/dw/schemart.svg)](https://npmjs.org/package/schemart) [![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
+[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart) [![Downloads/month](https://img.shields.io/npm/dm/schemart.svg)](https://npmjs.org/package/schemart) [![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
 
 Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL, MySQL, and SQL Server.
 
