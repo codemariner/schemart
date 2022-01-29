@@ -1,2 +1,4 @@
 #!/bin/sh
-../../bin/run -d -f ./schemart.yaml  -u postgres://postgres:postgres@localhost:5432/schemart
+../../bin/run \
+	-f ./schemart.yaml \
+	-u 'Server=localhost,1433;Database=master;User Id=SA;Password=SA_Pass!234;Encrypt=false'

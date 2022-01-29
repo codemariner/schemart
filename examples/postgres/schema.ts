@@ -1,18 +1,17 @@
 // generated from schemart
 import * as rt from 'runtypes';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Interval } from 'luxon';
 
 function isInterval(value: unknown): value is Interval {
 	return value instanceof Interval;
 }
-function isDate(value: unknown): value is Date {
-	return value instanceof Date;
-}
+const IntervalRt = rt.Unknown.withConstraint(isInterval);
 
-const IntervalRt = rt.Unknown.withGuard(isInterval);
-const DateRt = rt.Unknown.withGuard(isDate);
+// custom schemart types
+const srt = {
+	Date: rt.Unknown.withGuard((x: unknown): x is Date => x instanceof Date),
+};
 
 export const GenderEnum = rt.Union(rt.Literal('male'), rt.Literal('female'));
 export type Gender = rt.Static<typeof GenderEnum>;
@@ -52,7 +51,7 @@ export const Users = rt.Record({
 	/**
 	 * type: date
 	 */
-	birthDay: rt.Optional(DateRt.Or(rt.Null)),
+	birthDay: rt.Optional(srt.Date.Or(rt.Null)),
 	/**
 	 * type: gender
 	 */

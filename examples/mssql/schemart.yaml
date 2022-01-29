@@ -1,36 +1,15 @@
 databaseType: 'mssql'
 outfile: './schema.ts'
 runtimeType: 'runtypes'
-includeViews: false
+includeViews: true
 extraInfo:
   indexes: true
   dataType: true
 excludeTables:
   - schema_migrations
-content: |
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  import { Interval } from 'luxon';
-
-  function isInterval(value:unknown): value is Interval {
-    return value instanceof Interval;
-  }
-  function isDate(value:unknown): value is Date {
-    return value instanceof Date;
-  }
-
-  const IntervalRt = rt.Unknown.withGuard(isInterval);
-  const DateRt = rt.Unknown.withGuard(isDate);
-
-typeMappings:
-  'date':
-    runtype: DateRt
-  'timestamp':
-    runtype: DateRt
-  '_tsrange':
-    runtype: rt.Array(IntervalRt)
-  'tsrange':
-    runtype: IntervalRt
-  'tstzrange':
-    runtype: IntervalRt
-  'daterange':
-    runtype: IntervalRt
+  - spt_fallback_usg
+  - spt_fallback_dev
+  - spt_fallback_db
+  - spt_values
+  - spt_monitor
+  - MSreplication_options

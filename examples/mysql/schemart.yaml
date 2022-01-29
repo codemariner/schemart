@@ -4,15 +4,8 @@ runtimeType: 'runtypes'
 enumsAsTypes: false
 excludeTables:
   - schema_migrations
-content: |
-  function isDate(value:unknown): value is Date {
-    return value instanceof Date;
-  }
-
-  const DateRt = rt.Unknown.withGuard(isDate);
-
 typeMappings:
   'date':
-    runtype: DateRt
+    runtype: srt.Date
   'datetime':
-    runtype: DateRt
+    runtype: srt.Date

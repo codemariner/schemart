@@ -15,18 +15,13 @@ content: |
   function isInterval(value:unknown): value is Interval {
     return value instanceof Interval;
   }
-  function isDate(value:unknown): value is Date {
-    return value instanceof Date;
-  }
-
-  const IntervalRt = rt.Unknown.withGuard(isInterval);
-  const DateRt = rt.Unknown.withGuard(isDate);
+  const IntervalRt = rt.Unknown.withConstraint(isInterval);
 
 typeMappings:
   'date':
-    runtype: DateRt
+    runtype: srt.Date
   'timestamp':
-    runtype: DateRt
+    runtype: srt.Date
   '_tsrange':
     runtype: rt.Array(IntervalRt)
   'tsrange':

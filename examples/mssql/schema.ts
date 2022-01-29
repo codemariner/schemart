@@ -1,105 +1,94 @@
 // generated from schemart
 import * as rt from 'runtypes';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Interval } from 'luxon';
 
-function isInterval(value: unknown): value is Interval {
-	return value instanceof Interval;
-}
-function isDate(value: unknown): value is Date {
-	return value instanceof Date;
-}
-
-const IntervalRt = rt.Unknown.withGuard(isInterval);
-const DateRt = rt.Unknown.withGuard(isDate);
-
-export const GenderEnum = rt.Union(rt.Literal('male'), rt.Literal('female'));
-export type Gender = rt.Static<typeof GenderEnum>;
+// custom schemart types
+const srt = {
+	Date: rt.Unknown.withGuard((x: unknown): x is Date => x instanceof Date),
+};
 
 /**
- * A customer user account.
+ * This is my table comment
  */
 export const Users = rt.Record({
 	/**
-	 * type: int4
-	 * idx: PK__users__K1
+	 * type: int
 	 */
 	id: rt.Number,
 	/**
-	 * type: text
-	 * idx: UK__users__K2_k3
-	 * idx: name_users_birth_day
+	 * type: nvarchar
 	 */
 	name: rt.String,
 	/**
-	 * type: text
-	 * idx: UK__users__K2_k3
+	 * type: nvarchar
 	 */
 	email: rt.String,
 	/**
-	 * type: bool
+	 * type: bit
 	 */
-	emailValidated: rt.Optional(rt.Boolean.Or(rt.Null)),
-	/**
-	 * The range of time the user is considered available.
-	 * type: tsrange
-	 */
-	availability: rt.Optional(IntervalRt.Or(rt.Null)),
-	/**
-	 * type: _tsrange
-	 */
-	schedule: rt.Optional(rt.Array(IntervalRt).Or(rt.Null)),
+	emailValidated: rt.Optional(rt.Number.Or(rt.Null)),
 	/**
 	 * type: date
-	 * idx: users_birth_day
-	 * idx: name_users_birth_day
 	 */
-	birthDay: rt.Optional(DateRt.Or(rt.Null)),
+	birthDay: rt.Optional(srt.Date.Or(rt.Null)),
 	/**
-	 * type: gender
+	 * type: char
 	 */
-	gender: rt.Optional(GenderEnum.Or(rt.Null)),
+	gender: rt.Optional(rt.String.Or(rt.Null)),
 	/**
-	 * type: json
+	 * type: ntext
 	 */
-	metadata: rt.Optional(rt.Unknown.Or(rt.Null)),
+	metadata: rt.Optional(rt.String.Or(rt.Null)),
 	/**
-	 * type: timestamptz
+	 * type: datetime2
 	 */
-	createAt: rt.String,
+	createdAt: srt.Date,
 	/**
-	 * type: timestamptz
+	 * type: datetime2
 	 */
-	updatedAt: rt.String,
+	updatedAt: srt.Date,
+	/**
+	 * type: varchar
+	 */
+	uName: rt.Optional(rt.String.Or(rt.Null)),
 });
 export type Users = rt.Static<typeof Users>;
 
 export const BlogPosts = rt.Record({
 	/**
-	 * type: int4
-	 * idx: PK__blog_posts__K1
+	 * type: int
 	 */
 	id: rt.Number,
 	/**
-	 * type: int4
+	 * type: int
 	 */
 	userId: rt.Number,
 	/**
-	 * type: varchar
-	 * idx: UK__blog_posts__K3
+	 * type: nvarchar
 	 */
 	subject: rt.String,
 	/**
-	 * type: text
+	 * type: nvarchar
 	 */
 	content: rt.Optional(rt.String.Or(rt.Null)),
 	/**
-	 * type: timestamptz
+	 * type: datetime2
 	 */
-	createAt: rt.String,
+	createdAt: srt.Date,
 	/**
-	 * type: timestamptz
+	 * type: datetime2
 	 */
-	updatedAt: rt.String,
+	updatedAt: srt.Date,
 });
 export type BlogPosts = rt.Static<typeof BlogPosts>;
+
+export const Customers = rt.Record({
+	/**
+	 * type: int
+	 */
+	custId: rt.Number,
+	/**
+	 * type: NameType
+	 */
+	firstName: rt.Optional(rt.String.Or(rt.Null)),
+});
+export type Customers = rt.Static<typeof Customers>;
