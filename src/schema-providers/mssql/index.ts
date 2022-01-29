@@ -11,3 +11,5 @@ export const MssqlSchemaProvider: SchemaProvider<MssqlConfig> = {
 	mapToRuntype,
 	getDataType,
 };
+
+export default MssqlSchemaProvider;

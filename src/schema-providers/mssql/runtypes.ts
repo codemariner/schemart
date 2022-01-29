@@ -43,13 +43,12 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 			return 'rt.String';
 
 		// date/time types
-		// we don't convert these because drivers don't convert (by default)
 		case 'date':
 		case 'datetime':
 		case 'datetime2':
 		case 'datetimeoffset':
 		case 'smalldatetime':
-			return 'rt.String';
+			return 'srt.Date';
 
 		// binary types
 		case 'binary':

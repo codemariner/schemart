@@ -110,6 +110,13 @@ function transformTable(
 const header = `
 // generated from schemart
 import * as rt from 'runtypes';
+`;
+
+const customTypes = `
+// custom schemart types
+const srt = {
+    Date: rt.Unknown.withGuard((x:unknown):x is Date => x instanceof Date)
+}
 
 `;
 
@@ -117,7 +124,7 @@ export function generate({ config, schemaInfo, mapToRuntype, getDataType }: Gene
 	debug('generating type specs');
 	const { enums, tables } = schemaInfo;
 	let result = header;
-	result += `${config.content ?? ''}\n`;
+	result += `${config.content ?? ''}\n${customTypes}`;
 
 	enums?.forEach((enumInfo) => {
 		debug('transforming enum', enumInfo.name);
