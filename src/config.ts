@@ -31,6 +31,7 @@ export const Config = Record({
 	runtimeType: RuntimeType,
 	outfile: String,
 	dbUri: Optional(String),
+	enumsAsTypes: Optional(Boolean),
 	includeViews: Optional(Boolean),
 	extraInfo: Optional(ExtraInfo),
 	excludeTables: Optional(Array(String)),

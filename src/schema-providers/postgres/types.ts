@@ -1,11 +1,10 @@
-import { Boolean, Optional, Record, Static, String } from 'runtypes';
+import { Optional, Record, Static, String } from 'runtypes';
 
 import { Config } from '../../config';
 import { Column, SchemaInfo, TableWithColumns } from '../../schema-info';
 
 export const PostgresConfig = Config.And(
 	Record({
-		enumsAsTypes: Optional(Boolean),
 		schema: Optional(String),
 		includeForeignTables: Optional(String),
 	})

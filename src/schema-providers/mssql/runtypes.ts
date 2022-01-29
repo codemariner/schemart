@@ -3,7 +3,7 @@ import { SchemaProvider } from '../../schema-provider';
 
 import { MssqlColumn, MssqlConfig, MysqlSchemaInfo } from './types';
 
-const debug = baseDebug.extend('schema-providers/postgres');
+const debug = baseDebug.extend('schema-providers/mssql');
 
 export const getDataType: SchemaProvider['getDataType'] = (
 	_config: MssqlConfig,
