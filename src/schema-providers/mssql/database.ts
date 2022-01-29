@@ -56,6 +56,7 @@ async function getColumns(config: MssqlConfig, tableName: string): Promise<Mssql
 	query += `ORDER BY position`;
 	const { recordset } = await mssql.query(query);
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return recordset.map((row: any) => ({
 		name: row.name,
 		description: row.description,
