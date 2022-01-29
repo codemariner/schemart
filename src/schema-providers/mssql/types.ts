@@ -10,7 +10,9 @@ export const MssqlConfig = Config.And(
 );
 export type MssqlConfig = Static<typeof MssqlConfig>;
 
-export type MssqlColumn = Column;
+export type MssqlColumn = Column & {
+	isUserDefined: boolean;
+};
 
 export interface MysqlSchemaInfo extends SchemaInfo {
 	tables?: TableWithColumns<MssqlColumn>[];

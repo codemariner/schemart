@@ -23,6 +23,8 @@ function getColumnQuery(type: 'tables' | 'views', name: string, config: MssqlCon
         e.value AS "description",
         ISNULL(TYPE_NAME(c.system_type_id), y.name) AS data_type,
         COLUMNPROPERTY(c.object_id, c.name, 'ordinal') AS position,
+        y.is_user_defined,
+        y.name AS raw_type,
         convert(nvarchar(4000), OBJECT_DEFINITION(c.default_object_id)) AS column_default,
         convert(varchar(3), CASE c.is_nullable WHEN 1 THEN 'YES' ELSE 'NO' END)	AS is_nullable
       FROM 
@@ -58,7 +60,8 @@ async function getColumns(config: MssqlConfig, tableName: string): Promise<Mssql
 		name: row.name,
 		description: row.description,
 		dataType: row.data_type,
-		rawType: row.data_type,
+		rawType: row.raw_type,
+		isUserDefined: row.is_user_defined,
 		isNullable: row.is_nullable === 'YES',
 		defaultValue: row.column_default,
 		// no array types in mssql

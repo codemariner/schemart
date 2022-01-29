@@ -1,6 +1,5 @@
 import baseDebug from '../../debug';
 import { SchemaProvider } from '../../schema-provider';
-import { camelize } from '../../util';
 
 import { MssqlColumn, MssqlConfig, MysqlSchemaInfo } from './types';
 
@@ -13,57 +12,57 @@ export const getDataType: SchemaProvider['getDataType'] = (
 
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 	_config: MssqlConfig,
-	schemaInfo: MysqlSchemaInfo,
+	_schemaInfo: MysqlSchemaInfo,
 	column: MssqlColumn
 ): string => {
 	debug('mapToRunType column', column.name);
-	const { enums } = schemaInfo;
-	if (column.dataType === 'USER-DEFINED') {
-		const enumName = camelize(column.dataType);
-		const enumInfo = enums?.find((e) => e.name === column.dataType);
-		if (!enumInfo) {
-			console.warn(`user defined type ${column.dataType} is unknown.`);
-			return 'rt.Unknown';
-		}
-		return `${enumName}Enum`;
-	}
 	switch (column.dataType) {
-		case 'char':
-		case 'varchar':
-		case 'text':
-		case 'tinytext':
-		case 'mediumtext':
-		case 'longtext':
-		case 'time':
-		case 'geometry':
-		case 'set':
-		case 'enum':
-		case 'date':
-		case 'datetime':
-		case 'timestamp':
-			// keep set and enum defaulted to string if custom type not mapped
-			return 'rt.String';
-		case 'integer':
-		case 'int':
-		case 'smallint':
-		case 'mediumint':
+		// numerical types
 		case 'bigint':
-		case 'double':
+		case 'bit':
 		case 'decimal':
-		case 'numeric':
+		case 'int':
 		case 'float':
-		case 'year':
+		case 'money':
+		case 'numeric':
+		case 'real':
+		case 'smallint':
+		case 'smallmoney':
 		case 'tinyint':
 			return 'rt.Number';
-		// binary as buffer or string
-		case 'tinyblob':
-		case 'mediumblob':
-		case 'longblob':
-		case 'blob':
+
+		// character types
+		case 'char':
+		case 'nchar':
+		case 'ntext':
+		case 'nvarchar':
+		case 'text':
+		case 'time':
+		case 'timestamp':
+		case 'varchar':
+			return 'rt.String';
+
+		// date/time types
+		// we don't convert these because drivers don't convert (by default)
+		case 'date':
+		case 'datetime':
+		case 'datetime2':
+		case 'datetimeoffset':
+		case 'smalldatetime':
+			return 'rt.String';
+
+		// binary types
 		case 'binary':
 		case 'varbinary':
-		case 'bit':
-		case 'json':
+		case 'image':
+			return 'rt.Unknown';
+		// misc other types
+		case 'geography':
+		case 'geometry':
+		case 'hierarchyid':
+		case 'sql_variant':
+		case 'uniqueidentifier':
+		case 'xml':
 		default: {
 			return 'rt.Unknown';
 		}
