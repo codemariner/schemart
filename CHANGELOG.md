@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0]
+
+### Features
+* Add support for SQL Server. `mssql` is now an option for 'dataType'.
+* Now including an `srt.Date` runtime type in generated files.
+### Chores
+* Update README
+* Add initial test configurations and update examples.
+
 ## [1.0.0]
 ### Chores
 * Code reorganization
