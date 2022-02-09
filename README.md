@@ -130,13 +130,14 @@ Configuration options are stored in a YAML file.
 * `databaseType`: _required_ - Possible values: `postgres`, `mysql`, `mssql`
 * `outfile`: _required_ - path to the output file to write type definitions to. This can be a relative path (to the yaml file itself)
 * `runtimeType`: _required_ - The type of runtime type system to target. Currently, only `runtypes` is supported.
+* `camelCase`: _optional_ - Whether or not to convert database object names to camelCase. Default true.
 * `dbUri`: _optional_ - Database connection string. This can be passed in through the command line.
-* `includeViews`: _optional_ boolean - Whether or not to include views when generating types. Defaults to `false`.
 * `extraInfo`: _optional_ - Whether or not to include additional information. Includes one of:
   * `indexes`: _optional_ - include index names in field comments.
   * `dataType`: _optional_ - include index names in field comments.
 * `excludeTables`: _optional_ array - A list of tables to exclude from type generation.
 * `enumsAsTypes`: _optional_ boolean - whether or not to generate enum values as a typescript enum or union literal type. This is not supported in mssql.
+* `includeViews`: _optional_ boolean - Whether or not to include views when generating types. Defaults to `false`.
 * `content`: _optional_ - Custom content that will be inserted at the top of the generated ts file.
 * `typeMappings`: _optional_ - Map of database type names to target type information. Use this to provide custom type mapping from some database type. For example:
   ```yaml
