@@ -7,7 +7,7 @@ export function getSchemaProvider(dbType: DatabaseType): SchemaProvider {
 	try {
 		// eslint-disable-next-line
 		const provider = require(`./${dbType}`).default as SchemaProvider;
-		debug(`required schema provider: ${dbType}`, provider);
+		debug(`required schema provider: ${dbType}`);
 		return provider;
 	} catch (e) {
 		// eslint-disable-next-line no-console

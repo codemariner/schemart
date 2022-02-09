@@ -95,6 +95,11 @@ async function getTables(db: Db, config: MysqlConfig): Promise<Table[]> {
            AND table_name NOT IN (?)`;
 		args.push(config.excludeTables);
 	}
+	if (config.tables?.length) {
+		query += `
+           AND table_name IN (?)`;
+		args.push(config.tables);
+	}
 	const [rows] = await db.query(query, args);
 
 	return (rows as mysql.RowDataPacket[]).map((row: any) => ({

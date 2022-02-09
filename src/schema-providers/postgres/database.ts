@@ -143,10 +143,16 @@ async function getTables(db: Db, config: PostgresConfig): Promise<Table[]> {
 
 	if (config.excludeTables?.length) {
 		// != ANY($3) does not work
-		const params = config.excludeTables.map((_, idx) => `$${idx + 3}`);
+		const params = config.excludeTables.map((_, idx) => `$${idx + args.length + 1}`);
 		query += `
            AND t.table_name NOT IN (${params.join(',')})`;
 		args = args.concat(config.excludeTables);
+	}
+	if (config.tables?.length) {
+		const params = config.tables.map((_, idx) => `$${idx + args.length + 1}`);
+		query += `
+           AND t.table_name IN (${params.join(',')})`;
+		args = args.concat(config.tables);
 	}
 	const result = await db.query(query, args);
 

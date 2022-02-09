@@ -5,11 +5,6 @@ includeViews: true
 extraInfo:
   indexes: true
   dataType: true
-excludeTables:
-  - schema_migrations
-  - spt_fallback_usg
-  - spt_fallback_dev
-  - spt_fallback_db
-  - spt_values
-  - spt_monitor
-  - MSreplication_options
+tables:
+  - users
+  - blog_posts

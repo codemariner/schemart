@@ -135,7 +135,8 @@ Configuration options are stored in a YAML file.
 * `extraInfo`: _optional_ - Whether or not to include additional information. Includes one of:
   * `indexes`: _optional_ - include index names in field comments.
   * `dataType`: _optional_ - include index names in field comments.
-* `excludeTables`: _optional_ array - A list of tables to exclude from type generation.
+* `excludeTables`: _optional_ array - A list of tables to exclude from type generation. Default is none.
+* `tables`: _optional_ array - A list of tables (or views) to include for type generation. Is overridden by `excludeTables`. `includeViews` must be enabled to allow specification of views. Default is all.
 * `enumsAsTypes`: _optional_ boolean - whether or not to generate enum values as a typescript enum or union literal type. This is not supported in mssql.
 * `includeViews`: _optional_ boolean - Whether or not to include views when generating types. Defaults to `false`.
 * `content`: _optional_ - Custom content that will be inserted at the top of the generated ts file.

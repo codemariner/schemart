@@ -97,6 +97,10 @@ function getTableQuery(type: 'tables' | 'views', config: MssqlConfig): string {
 		query += `
         AND t.name NOT IN ('${config.excludeTables.join("','")}')`;
 	}
+	if (config.tables?.length) {
+		query += `
+        AND t.name IN ('${config.tables.join("','")}')`;
+	}
 	return query;
 }
 
