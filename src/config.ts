@@ -27,6 +27,7 @@ const ExtraInfo = Partial({
 });
 
 export const Config = Record({
+	camelCase: Optional(Boolean),
 	databaseType: DatabaseType,
 	runtimeType: RuntimeType,
 	outfile: String,

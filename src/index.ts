@@ -29,6 +29,7 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 		);
 	}
 	const uncheckedConfig = {
+		camelCase: true,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		...(rawConfig as any),
 		dbUri,
@@ -46,7 +47,6 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 		);
 	}
 
-	debug(schemaProvider);
 	const config = schemaProvider.configRt.check(uncheckedConfig);
 	const schemaInfo = await schemaProvider.getDbSchema(config);
 

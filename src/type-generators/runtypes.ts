@@ -17,15 +17,17 @@ export interface GenerateOpts {
 	getDataType: GetDataTypeFn;
 }
 
+type TransformOpts = Pick<Config, 'camelCase'>;
+
 const debug = baseDebug.extend('type-generators/runtypes');
 
 const ObjStartTag = (type: string): string => `${type}({\n`;
 
 const ObjEndTag = (): string => `})`;
 
-function transformEnum(enumInfo: Enum): string {
+function transformEnum(opts: TransformOpts, enumInfo: Enum): string {
 	debug('transformEnum', enumInfo);
-	const name = camelize(enumInfo.name);
+	const name = opts.camelCase ? camelize(enumInfo.name) : enumInfo.name;
 	let result = `export enum ${name} {\n`;
 	result += enumInfo.values.map((value): string => `  ${value}`).join(',\n');
 	result += '\n}\n';
@@ -37,9 +39,9 @@ function transformEnum(enumInfo: Enum): string {
 	return result;
 }
 
-function transformEnumAsUnion(enumInfo: Enum): string {
+function transformEnumAsUnion(opts: TransformOpts, enumInfo: Enum): string {
 	debug('transformEnumAsUnion', enumInfo);
-	const name = camelize(enumInfo.name);
+	const name = opts.camelCase ? camelize(enumInfo.name) : enumInfo.name;
 	let result = `export const ${name}Enum = rt.Union(\n`;
 	enumInfo.values.forEach((val, idx) => {
 		if (idx > 0) {
@@ -59,7 +61,7 @@ function transformTable(
 	mapToRuntype: MapToRuntypeFn,
 	getDataType: GetDataTypeFn
 ): string {
-	const tableName = camelize(table.tableName);
+	const tableName = config.camelCase ? camelize(table.tableName) : table.tableName;
 	let result = '';
 	if (table.description) {
 		result += `
@@ -70,7 +72,7 @@ function transformTable(
 	result += `export const ${tableName} = `;
 	result += ObjStartTag('rt.Record');
 	table.columns.forEach((col) => {
-		const name = camelcase(col.name);
+		const name = config.camelCase ? camelcase(col.name) : col.name;
 		const optional = col.isNullable;
 
 		const columnDataType = getDataType(config, col);
@@ -129,9 +131,9 @@ export function generate({ config, schemaInfo, mapToRuntype, getDataType }: Gene
 	enums?.forEach((enumInfo) => {
 		debug('transforming enum', enumInfo.name);
 		if (config.enumsAsTypes) {
-			result += transformEnumAsUnion(enumInfo);
+			result += transformEnumAsUnion(config, enumInfo);
 		} else {
-			result += transformEnum(enumInfo);
+			result += transformEnum(config, enumInfo);
 		}
 	});
 

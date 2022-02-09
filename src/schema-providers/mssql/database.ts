@@ -55,6 +55,7 @@ async function getColumns(config: MssqlConfig, tableName: string): Promise<Mssql
 	}
 	query += `ORDER BY position`;
 	const { recordset } = await mssql.query(query);
+	debug(`retrieved column information for ${tableName}`);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return recordset.map((row: any) => ({
@@ -101,14 +102,17 @@ function getTableQuery(type: 'tables' | 'views', config: MssqlConfig): string {
 
 async function getTables(_db: Db, config: MssqlConfig): Promise<Table[]> {
 	let query = getTableQuery('tables', config);
+	let logEntry = '';
 
 	if (config.includeViews) {
+		logEntry += ' and views';
 		query += `
         UNION
         ${getTableQuery('views', config)}
         `;
 	}
 	const { recordset } = await mssql.query(query);
+	debug(`retrieved information for ${recordset.length} tables${logEntry}`);
 
 	return recordset.map((row) => ({
 		tableName: row.name,
