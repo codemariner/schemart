@@ -86,7 +86,7 @@ function transformTable(
 
 		const commentLines = [];
 		if (col.description) {
-			commentLines.push(`${col.description.replaceAll('\n', ' ').trim()}`);
+			commentLines.push(`${col.description.replace(/\n/g, ' ').trim()}`);
 		}
 		if (config.extraInfo?.dataType) {
 			commentLines.push(`type: ${col.rawType}`);

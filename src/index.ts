@@ -16,8 +16,18 @@ export const GenerateOpts = Record({
 	dryRun: Optional(Boolean),
 });
 export type GenerateOpts = Static<typeof GenerateOpts>;
+export interface GenerateOptsDryRun extends GenerateOpts {
+    dryRun: true
+}
 
-export async function generate(opts: GenerateOpts): Promise<void> {
+function isDryRun(opts:GenerateOpts): opts is GenerateOptsDryRun {
+    return !!opts.dryRun;
+}
+
+
+export async function generate(opts: GenerateOptsDryRun) : Promise<string>;
+export async function generate(opts: GenerateOpts) : Promise<void>;
+export async function generate<T extends GenerateOpts>(opts: T): Promise<string | void> {
 	const { configFile } = opts;
 	const contents = (await fs.promises.readFile(configFile)).toString('utf-8');
 	const rawConfig = yaml.load(contents);
@@ -61,11 +71,16 @@ export async function generate(opts: GenerateOpts): Promise<void> {
 		});
 	}
 
-	if (!opts.dryRun) {
-		const file = path.join(path.dirname(configFile), config.outfile);
-		await fs.promises.writeFile(file, result, 'utf-8');
-		console.log('wrote schema to file', file);
-	} else {
-		console.log('// dry run mode\n', result);
-	}
+	if (isDryRun(opts)) {
+	  console.log('// dry run mode\n', result);
+      if (process.env.NODE_ENV === 'test') {
+        // this allows tests to eval the generated code and inspect what's exported
+        return `${result}\n module.exports;`
+      }
+      return result;
+    }
+	const file = path.join(path.dirname(configFile), config.outfile);
+	await fs.promises.writeFile(file, result, 'utf-8');
+	console.log('wrote schema to file', file);
+
 }
