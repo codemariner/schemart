@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0]
+
+### Features
+* Add configuration option `camelCase`. Set to false to generate types with names that match the database. Defaults to true.
+* Add configuration option `tables`. This allows the specification of particular tables (or views) to generate types for.
+
 ## [1.1.0]
 
 ### Features
