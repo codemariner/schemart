@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1]
+
+### Fixes
+* Fixed incorrect type definition (after updating to TypeScript 4.9.5).
+
+### Chores
+* Updated dependencies.
+
 ## [1.2.0]
 
 ### Features
