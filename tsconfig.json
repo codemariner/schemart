@@ -14,7 +14,8 @@
 		"noUnusedParameters": true,
 		"inlineSourceMap": true,
 		"target": "es2017",
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+	    "skipLibCheck": true
 	},
 	"include": ["src/**/*"]
 }
