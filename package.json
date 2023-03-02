@@ -22,7 +22,7 @@
 		"clean": "del-cli -f dist && del-cli -f coverage",
 		"compose": "docker-compose -p schemart -f ./test/docker-compose.yaml",
 		"lint": "eslint . --ext .ts,.js",
-		"posttest": "eslint . --ext .ts --config .eslintrc",
+		"posttest": "eslint . --ext .ts --config .eslintrc.js",
 		"prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
 		"prepublishOnly": "yarn build && del-cli -f coverage",
 		"prettier": "prettier  --write \"$npm_package_config_prettier\"",
