@@ -80,4 +80,3 @@ services:
           -path /src/migrations \
           -database sqlserver://sa:SA_Pass!234@mssql:1433/schemart \
           up
-

@@ -15,7 +15,7 @@
 		"inlineSourceMap": true,
 		"target": "es2017",
 		"resolveJsonModule": true,
-	    "skipLibCheck": true
+		"skipLibCheck": true
 	},
 	"include": ["src/**/*"]
 }

@@ -125,10 +125,7 @@ async function getTables(_db: Db, config: MssqlConfig): Promise<Table[]> {
 	}));
 }
 
-async function usingDb<R, T extends (db: Db) => Promise<R>>(
-	dbUri: string,
-	fn: T
-): Promise<R> {
+async function usingDb<R, T extends (db: Db) => Promise<R>>(dbUri: string, fn: T): Promise<R> {
 	const pool = await mssql.connect(dbUri);
 
 	const poolDisposer = Bluebird.resolve(pool)

@@ -108,10 +108,7 @@ async function getTables(db: Db, config: MysqlConfig): Promise<Table[]> {
 	}));
 }
 
-async function usingDb<R, T extends (db: Db) => Promise<R>>(
-	dbUri: string,
-	fn: T
-): Promise<R> {
+async function usingDb<R, T extends (db: Db) => Promise<R>>(dbUri: string, fn: T): Promise<R> {
 	const pool = await mysql.createPool({
 		uri: dbUri,
 	});
