@@ -3,6 +3,7 @@ import camelcase from 'lodash.camelcase';
 import baseDebug from '../../debug';
 import { SchemaProvider } from '../../schema-provider';
 import { capitalize } from '../../util';
+import { getType } from '../util';
 
 import { PostgresColumn, PostgresConfig, PostgresSchemaInfo } from './types';
 
@@ -14,7 +15,7 @@ export const getDataType: SchemaProvider['getDataType'] = (
 ): string => column.udtName;
 
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
-	_config: PostgresConfig,
+	{ runtimeType }: PostgresConfig,
 	schemaInfo: PostgresSchemaInfo,
 	column: PostgresColumn
 ): string => {
@@ -25,9 +26,9 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		const enumInfo = enums?.find((e) => e.name === column.udtName);
 		if (!enumInfo) {
 			console.warn(`user defined type ${column.udtName} is unknown.`);
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 		}
-		return `${enumName}Enum`;
+		return runtimeType === 'runtypes' ? `${enumName}Enum` : enumName;
 	}
 	switch (column.udtName) {
 		case 'bpchar':
@@ -51,7 +52,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'tsrange':
 		case 'tstzrange':
 		case 'daterange':
-			return 'rt.String';
+			return getType(runtimeType, 'string');
 		case 'int2':
 		case 'int4':
 		case 'int8':
@@ -60,13 +61,13 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'numeric':
 		case 'money':
 		case 'oid':
-			return 'rt.Number';
+			return getType(runtimeType, 'number');
 		case 'bool':
-			return 'rt.Boolean';
+			return getType(runtimeType, 'boolean');
 		case 'json':
 		case 'jsonb':
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 		default:
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 	}
 };

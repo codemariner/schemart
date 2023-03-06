@@ -6,7 +6,7 @@ import { Boolean, Optional, Record, Static, String } from 'runtypes';
 
 import { Config } from './config';
 import debug from './debug';
-import { generate as generateRuntypes } from './type-generators/runtypes';
+import generator from './type-generators';
 import { DatabaseTypeNames } from './schema-providers/database-types';
 import { getSchemaProvider } from './schema-providers';
 
@@ -60,15 +60,13 @@ export async function generate<T extends GenerateOpts>(opts: T): Promise<string 
 	const schemaInfo = await schemaProvider.getDbSchema(config);
 
 	let result = '// no data';
-	if (config.runtimeType === 'runtypes') {
-		// do runtypes generation
-		result = generateRuntypes({
-			config,
-			schemaInfo,
-			mapToRuntype: schemaProvider.mapToRuntype,
-			getDataType: schemaProvider.getDataType,
-		});
-	}
+
+	result = generator({
+		config,
+		schemaInfo,
+		mapToRuntype: schemaProvider.mapToRuntype,
+		getDataType: schemaProvider.getDataType,
+	});
 
 	if (isDryRun(opts)) {
 		console.log('// dry run mode\n', result);

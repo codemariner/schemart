@@ -14,7 +14,7 @@ import {
 
 import { DatabaseType } from './schema-providers/database-types';
 
-const RuntimeType = Union(Literal('runtypes'));
+const RuntimeType = Union(Literal('runtypes'), Literal('typescript'));
 
 const TypeMap = Record({
 	runtype: String,

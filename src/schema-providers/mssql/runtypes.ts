@@ -1,5 +1,6 @@
 import baseDebug from '../../debug';
 import { SchemaProvider } from '../../schema-provider';
+import { getType } from '../util';
 
 import { MssqlColumn, MssqlConfig, MysqlSchemaInfo } from './types';
 
@@ -11,7 +12,7 @@ export const getDataType: SchemaProvider['getDataType'] = (
 ): string => column.dataType;
 
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
-	_config: MssqlConfig,
+	{ runtimeType }: MssqlConfig,
 	_schemaInfo: MysqlSchemaInfo,
 	column: MssqlColumn
 ): string => {
@@ -29,7 +30,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'smallint':
 		case 'smallmoney':
 		case 'tinyint':
-			return 'rt.Number';
+			return getType(runtimeType, 'number');
 
 		// character types
 		case 'char':
@@ -40,7 +41,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'time':
 		case 'timestamp':
 		case 'varchar':
-			return 'rt.String';
+			return getType(runtimeType, 'string');
 
 		// date/time types
 		case 'date':
@@ -48,13 +49,13 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'datetime2':
 		case 'datetimeoffset':
 		case 'smalldatetime':
-			return 'srt.Date';
+			return getType(runtimeType, 'Date');
 
 		// binary types
 		case 'binary':
 		case 'varbinary':
 		case 'image':
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 		// misc other types
 		case 'geography':
 		case 'geometry':
@@ -63,7 +64,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'uniqueidentifier':
 		case 'xml':
 		default: {
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 		}
 	}
 };

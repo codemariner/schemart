@@ -1,6 +1,7 @@
 import baseDebug from '../../debug';
 import { SchemaProvider } from '../../schema-provider';
 import { camelize } from '../../util';
+import { getType } from '../util';
 
 import { MysqlColumn, MysqlConfig, MysqlSchemaInfo } from './types';
 
@@ -12,7 +13,7 @@ export const getDataType: SchemaProvider['getDataType'] = (
 ): string => column.dataType;
 
 export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
-	_config: MysqlConfig,
+	{ runtimeType }: MysqlConfig,
 	schemaInfo: MysqlSchemaInfo,
 	column: MysqlColumn
 ): string => {
@@ -23,9 +24,9 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		const enumInfo = enums?.find((e) => e.name === column.dataType);
 		if (!enumInfo) {
 			console.warn(`user defined type ${column.dataType} is unknown.`);
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 		}
-		return `${enumName}Enum`;
+		return runtimeType === 'runtypes' ? `${enumName}Enum` : enumName;
 	}
 	switch (column.dataType) {
 		case 'char':
@@ -42,7 +43,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'datetime':
 		case 'timestamp':
 			// keep set and enum defaulted to string if custom type not mapped
-			return 'rt.String';
+			return getType(runtimeType, 'string');
 		case 'integer':
 		case 'int':
 		case 'smallint':
@@ -54,7 +55,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'float':
 		case 'year':
 		case 'tinyint':
-			return 'rt.Number';
+			return getType(runtimeType, 'number');
 		// binary as buffer or string
 		case 'tinyblob':
 		case 'mediumblob':
@@ -65,7 +66,7 @@ export const mapToRuntype: SchemaProvider['mapToRuntype'] = (
 		case 'bit':
 		case 'json':
 		default: {
-			return 'rt.Unknown';
+			return getType(runtimeType, 'unknown');
 		}
 	}
 };
