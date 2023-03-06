@@ -90,6 +90,7 @@
 		"sql",
 		"postgres",
 		"mysql",
+		"mssql",
 		"runtypes"
 	],
 	"lint-staged": {
