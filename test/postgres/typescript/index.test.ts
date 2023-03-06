@@ -5,7 +5,7 @@ import Path from 'path';
 
 import ts from 'typescript';
 
-import { generate } from '../../src';
+import { generate } from '../../../src';
 
 describe('generate postgres', () => {
 	let schema: string;
@@ -18,12 +18,10 @@ describe('generate postgres', () => {
 		});
 	});
 
-	it('should generate the correct schema runtypes', () => {
-		const result = ts.transpile(schema);
-		const output = eval(result);
+	it('should generate compilable code', () => {
+		const result = ts.transpile(schema, {});
+		eval(result);
 
-		expect(output.GenderEnum).toBeTruthy();
-		expect(output.Users).toBeTruthy();
-		expect(output.BlogPosts).toBeTruthy();
+        // TODO: parse generated code to validate
 	});
 });

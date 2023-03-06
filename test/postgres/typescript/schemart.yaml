@@ -1,0 +1,22 @@
+databaseType: 'postgres'
+outfile: './schema.ts'
+runtimeType: 'typescript'
+enumsAsTypes: true
+excludeTables:
+  - schema_migrations
+content: |
+  import { Interval } from 'luxon';
+
+typeMappings:
+  'date':
+    runtype: Date
+  'timestamp':
+    runtype: Date
+  '_tsrange':
+    runtype: Interval[]
+  'tsrange':
+    runtype: Interval
+  'tstzrange':
+    runtype: Interval
+  'daterange':
+    runtype: Interval
