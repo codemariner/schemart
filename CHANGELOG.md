@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0]
+
+### Features
+* Add support for generating TypeScript types. This can be used in combination with runtime type validation libraries like [typia](https://github.com/samchon/typia).
+
 ## [1.2.1]
 
 ### Fixes
