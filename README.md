@@ -5,7 +5,7 @@
 ---
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/schemart.svg)](https://npmjs.org/package/schemart) [![Downloads/month](https://img.shields.io/npm/dm/schemart.svg)](https://npmjs.org/package/schemart) [![License](https://img.shields.io/npm/l/schemart.svg)](https://github.com/codemariner/schemart/blob/master/package.json)
 
-Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime definitions as [runtypes](https://github.com/pelotom/runtypes) from PostgreSQL, MySQL, and SQL Server.
+Generate runtime types and TypeScript from your database schema. Currently, this supports generating runtime type definitions as [runtypes](https://github.com/pelotom/runtypes), or directly to TypeScript, from PostgreSQL, MySQL, and SQL Server.
 
 ### Example
 Given the following table:
@@ -105,6 +105,10 @@ const { rows } = db.query(' SELECT id, name, phone_number FROM users; ')
 const users:User[] = rows.map((row) => User.check(row));
 ```
 
+### Runtime Type Checking
+
+A number of different [runtime type checking libraries](https://github.com/moltar/typescript-runtime-type-benchmarks#packages-compared) exist. `runtypes` is an excellent library that is used in many projects to perform runtime type validation. However, a newer breed of libraries have emerged that are able to utilize ahead-of-time compilation to greatly simplify usage and improve performance. A good example of this is [typia](https://github.com/samchon/typia). These libraries are able to utilize TypeScript types directly without the need to predefine a schema. In those cases, you just need to generate the TypeScript types, which SchemaRT supports.
+
 ## Install
 
 ```
@@ -129,7 +133,7 @@ Configuration options are stored in a YAML file.
 
 * `databaseType`: _required_ - Possible values: `postgres`, `mysql`, `mssql`
 * `outfile`: _required_ - path to the output file to write type definitions to. This can be a relative path (to the yaml file itself)
-* `runtimeType`: _required_ - The type of runtime type system to target. Currently, only `runtypes` is supported.
+* `runtimeType`: _required_ - The type of runtime type system to target. `runtypes` or `typescript`
 * `camelCase`: _optional_ - Whether or not to convert database object names to camelCase. Default true.
 * `dbUri`: _optional_ - Database connection string. This can be passed in through the command line.
 * `extraInfo`: _optional_ - Whether or not to include additional information. Includes one of:
@@ -144,7 +148,7 @@ Configuration options are stored in a YAML file.
   ```yaml
   typeMappings:
     tsrange:
-      runtype: IntervalRT
+      runtype: Interval
   ```
   * `{data type name}`:
     * `runtype: {type name}` 
