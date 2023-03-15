@@ -20,11 +20,11 @@ async function getColumns(db: Db, _config: MysqlConfig, tableName: string): Prom
 	const [rows] = await db.query(
 		`
         SELECT 
-            column_name,
-            data_type,
-            is_nullable,
-            column_default,
-            column_comment,
+            column_name as 'column_name',
+            data_type as 'data_type',
+            is_nullable as 'is_nullable',
+            column_default as 'column_default',
+            column_comment as 'column_comment',
             extra
         FROM information_schema.columns
        WHERE table_name = ?
@@ -49,12 +49,12 @@ async function getEnums(db: Db, _config: MysqlConfig): Promise<Enum[]> {
 	const [rows] = await db.query(
 		`
         SELECT 
-            column_name,
-            column_type,
-            data_type,
-            is_nullable,
-            column_default,
-            column_comment,
+            column_name as 'column_name',
+            column_type as 'column_type',
+            data_type as 'data_type',
+            is_nullable as 'is_nullable',
+            column_default as 'column_default',
+            column_comment as 'column_comment',
             extra
         FROM information_schema.columns
        WHERE table_schema  = ?
@@ -84,8 +84,8 @@ async function getTables(db: Db, config: MysqlConfig): Promise<Table[]> {
 	const args = [schemaName, tableTypes];
 
 	let query = `
-        SELECT table_name,
-               table_type
+        SELECT table_name as 'table_name',
+               table_type as 'table_type'
           FROM information_schema.tables
          WHERE table_schema = ?
            AND table_type in (?)`;

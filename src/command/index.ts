@@ -34,6 +34,10 @@ export default class SchemaRTCommand extends Command {
 		const { flags } = this.parse(SchemaRTCommand);
 		const cmdFlags: CmdFlags = CmdFlags.check(flags);
 
-		await generate(cmdFlags);
+		try {
+			await generate(cmdFlags);
+		} catch (e) {
+			console.error(e);
+		}
 	}
 }

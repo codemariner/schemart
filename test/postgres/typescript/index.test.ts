@@ -22,6 +22,6 @@ describe('generate postgres', () => {
 		const result = ts.transpile(schema, {});
 		eval(result);
 
-        // TODO: parse generated code to validate
+		// TODO: parse generated code to validate
 	});
 });
