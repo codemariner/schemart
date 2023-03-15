@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1]
+
+### Fixes
+* Fixed [compatibility issue with mysql8](https://github.com/codemariner/schemart/issues/1).
+
 ## [1.3.0]
 
 ### Features
