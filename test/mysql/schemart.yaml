@@ -2,6 +2,8 @@ databaseType: 'mysql'
 outfile: './schema.ts'
 runtimeType: 'runtypes'
 enumsAsTypes: false
+enums:
+  - gender
 excludeTables:
   - schema_migrations
 typeMappings:

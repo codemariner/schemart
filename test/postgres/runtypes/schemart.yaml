@@ -2,6 +2,9 @@ databaseType: 'postgres'
 outfile: './schema.ts'
 runtimeType: 'runtypes'
 enumsAsTypes: true
+enums:
+  - gender
+  - status
 excludeTables:
   - schema_migrations
 content: |

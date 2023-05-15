@@ -45,7 +45,14 @@ async function getColumns(db: Db, _config: MysqlConfig, tableName: string): Prom
 	}));
 }
 
-async function getEnums(db: Db, _config: MysqlConfig): Promise<Enum[]> {
+async function getEnums(db: Db, config: MysqlConfig): Promise<Enum[]> {
+	let subquery = '';
+	let args: string[] = [db.dbName];
+
+	if (config.enums?.length) {
+		subquery += 'AND column_name IN (?)';
+		args = args.concat(config.enums);
+	}
 	const [rows] = await db.query(
 		`
         SELECT 
@@ -59,8 +66,9 @@ async function getEnums(db: Db, _config: MysqlConfig): Promise<Enum[]> {
         FROM information_schema.columns
        WHERE table_schema  = ?
          AND data_type IN ('enum', 'set')
+         ${subquery}
        ORDER BY ORDINAL_POSITION`,
-		[db.dbName]
+		args
 	);
 
 	const enums = (rows as mysql.RowDataPacket[]).map((row: any) => {

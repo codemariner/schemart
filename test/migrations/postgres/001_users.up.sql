@@ -1,5 +1,9 @@
 CREATE TYPE gender AS ENUM ('male', 'female');
 
+CREATE TYPE status AS ENUM ('draft', 'published', 'archived');
+
+CREATE TYPE unused AS ENUM ('sample', 'unused', 'enum');
+
 CREATE TABLE public.users (
 	id serial NOT NULL,
 	name text NOT NULL,

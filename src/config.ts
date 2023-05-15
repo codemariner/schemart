@@ -36,6 +36,7 @@ export const Config = Record({
 	includeViews: Optional(Boolean),
 	extraInfo: Optional(ExtraInfo),
 	excludeTables: Optional(Array(String)),
+	enums: Optional(Array(String)),
 	tables: Optional(Array(String)),
 	content: Optional(String),
 	typeMappings: Optional(TypeMappings),

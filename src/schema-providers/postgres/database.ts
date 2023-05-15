@@ -94,6 +94,15 @@ async function getColumns(
 }
 
 async function getEnums(db: Db, config: PostgresConfig): Promise<Enum[]> {
+	let subquery = '';
+	let args: string[] = [config.schema ?? 'public'];
+
+	if (config.enums?.length) {
+		const params = config.enums.map((_, idx) => `$${idx + args.length + 1}`);
+		subquery += `AND t.typname IN (${params.join(',')})`;
+		args = args.concat(config.enums);
+	}
+
 	const result = await db.query(
 		`
         SELECT t.typname,
@@ -104,8 +113,9 @@ async function getEnums(db: Db, config: PostgresConfig): Promise<Enum[]> {
          INNER JOIN pg_catalog.pg_namespace n
             ON n.oid = t.typnamespace
          WHERE nspname = $1
+         ${subquery}
          ORDER BY t.typname, e.enumsortorder`,
-		[config.schema ?? 'public']
+		args
 	);
 
 	const mapped = result.rows.reduce((accum: { [key: string]: string[] }, row) => {
