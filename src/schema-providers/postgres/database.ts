@@ -106,7 +106,8 @@ async function getEnums(db: Db, config: PostgresConfig): Promise<Enum[]> {
 	const result = await db.query(
 		`
         SELECT t.typname,
-               e.enumlabel
+               e.enumlabel,
+               pg_catalog.obj_description(t.oid, 'pg_type') AS "description"
           FROM pg_type t
          INNER JOIN pg_enum e
             ON t.oid = e.enumtypid
@@ -118,16 +119,18 @@ async function getEnums(db: Db, config: PostgresConfig): Promise<Enum[]> {
 		args
 	);
 
-	const mapped = result.rows.reduce((accum: { [key: string]: string[] }, row) => {
-		// eslint-disable-next-line no-param-reassign
-		(accum[row.typname] ??= []).push(row.enumlabel);
-		return accum;
+	const mapped = result.rows.reduce((accum: { [key: string]: Enum }, row) => {
+        // eslint-disable-next-line no-multi-assign, no-param-reassign
+        const enumObj:Enum = accum[row.typname] ??= {
+            name: row.typname,
+            description: row.description,
+            values: []
+        }
+        enumObj.values.push(row.enumlabel)
+        return accum;
 	}, {});
 
-	return Object.entries(mapped).map(([key, value]) => ({
-		name: key,
-		values: value,
-	}));
+    return Object.entries(mapped).map(([_key, value]) => value);
 }
 
 async function getTables(db: Db, config: PostgresConfig): Promise<Table[]> {

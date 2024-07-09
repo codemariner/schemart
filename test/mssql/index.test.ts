@@ -7,23 +7,22 @@ import ts from 'typescript';
 
 import { generate } from '../../src';
 
-describe('generate mysql', () => {
+describe('generate mssql', () => {
 	let schema: string;
 
 	beforeAll(async () => {
 		schema = await generate({
 			configFile: Path.join(__dirname, 'schemart.yaml'),
-			dbUri: 'mysql://mysql:mysql@localhost:3307/schemart',
+			dbUri: 'Server=localhost,1433;Database=master;User Id=SA;Password=SA_Pass!234;Encrypt=false',
 			dryRun: true,
 		});
 	});
 
 	it('should generate the correct schema runtypes', () => {
+		console.log(schema);
+
 		const result = ts.transpile(schema);
 		const output = eval(result);
-
-		console.log(output);
-		expect(output.GenderEnum).toBeTruthy();
 		expect(output.Users).toBeTruthy();
 		expect(output.BlogPosts).toBeTruthy();
 	});

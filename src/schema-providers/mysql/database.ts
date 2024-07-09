@@ -77,6 +77,7 @@ async function getEnums(db: Db, config: MysqlConfig): Promise<Enum[]> {
 			?.map((value) => value.replace(/'/g, ''));
 		return {
 			name: row.column_name,
+            description: row.column_comment,
 			values: values ?? [],
 		};
 	});
@@ -93,7 +94,8 @@ async function getTables(db: Db, config: MysqlConfig): Promise<Table[]> {
 
 	let query = `
         SELECT table_name as 'table_name',
-               table_type as 'table_type'
+               table_type as 'table_type',
+               table_comment as 'description'
           FROM information_schema.tables
          WHERE table_schema = ?
            AND table_type in (?)`;
@@ -113,6 +115,7 @@ async function getTables(db: Db, config: MysqlConfig): Promise<Table[]> {
 	return (rows as mysql.RowDataPacket[]).map((row: any) => ({
 		tableName: row.table_name,
 		tableType: row.table_type,
+        description: row.description
 	}));
 }
 

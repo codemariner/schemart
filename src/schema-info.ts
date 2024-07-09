@@ -6,6 +6,7 @@ export interface Table {
 
 export interface Enum {
 	name: string;
+    description?: string | null;
 	values: string[];
 }
 

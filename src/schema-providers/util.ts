@@ -4,7 +4,7 @@ export type TsType = 'boolean' | 'string' | 'number' | 'unknown' | 'Date';
 
 const runtypesMap: { [key in TsType]: string } = {
 	boolean: 'rt.Boolean',
-	Date: 'rt.Date',
+	Date: 'srt.Date',
 	number: 'rt.Number',
 	string: 'rt.String',
 	unknown: 'rt.Unknown',

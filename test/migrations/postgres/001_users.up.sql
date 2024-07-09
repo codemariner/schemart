@@ -4,6 +4,10 @@ CREATE TYPE status AS ENUM ('draft', 'published', 'archived');
 
 CREATE TYPE unused AS ENUM ('sample', 'unused', 'enum');
 
+COMMENT ON TYPE status IS 'draft: post is in draft mode
+published: post has been published
+archived: post was archived';
+
 CREATE TABLE public.users (
 	id serial NOT NULL,
 	name text NOT NULL,

@@ -23,7 +23,14 @@ const ObjEndTag = (): string => `})`;
 function transformEnum(opts: TransformOpts, enumInfo: Enum): string {
 	debug('transformEnum', enumInfo);
 	const name = opts.camelCase ? camelize(enumInfo.name) : enumInfo.name;
-	let result = `export enum ${name} {\n`;
+    let result = '';
+    if (enumInfo.description) {
+        result += `
+/**
+ * ${enumInfo.description.split('\n').join('\n * ')}
+ */\n`
+    }
+	result += `export enum ${name} {\n`;
 	result += enumInfo.values.map((value): string => `  ${value}`).join(',\n');
 	result += '\n}\n';
 
@@ -37,7 +44,14 @@ function transformEnum(opts: TransformOpts, enumInfo: Enum): string {
 function transformEnumAsUnion(opts: TransformOpts, enumInfo: Enum): string {
 	debug('transformEnumAsUnion', enumInfo);
 	const name = opts.camelCase ? camelize(enumInfo.name) : enumInfo.name;
-	let result = `export const ${name}Enum = rt.Union(\n`;
+    let result = '';
+    if (enumInfo.description) {
+        result += `
+/**
+ * ${enumInfo.description.split('\n').join('\n * ')}
+ */\n`
+    }
+	result += `export const ${name}Enum = rt.Union(\n`;
 	enumInfo.values.forEach((val, idx) => {
 		if (idx > 0) {
 			result += ',\n';
@@ -61,7 +75,7 @@ function transformTable(
 	if (table.description) {
 		result += `
 /**
- * ${table.description}
+ * ${table.description.split('\n').join('\n * ')}
  */\n`;
 	}
 	result += `export const ${tableName} = `;

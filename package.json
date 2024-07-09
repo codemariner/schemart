@@ -20,6 +20,8 @@
 		"build": "tsc",
 		"build:test": "tsc --project test --noEmit",
 		"clean": "del-cli -f dist && del-cli -f coverage",
+		"dev:up": "npm run compose -- up -d",
+		"dev:down": "npm run compose -- down",
 		"compose": "docker-compose -p schemart -f ./test/docker-compose.yaml",
 		"lint": "eslint . --ext .ts,.js",
 		"posttest": "eslint . --ext .ts --config .eslintrc.js",

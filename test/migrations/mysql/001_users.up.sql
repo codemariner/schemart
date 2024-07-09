@@ -4,7 +4,7 @@ CREATE TABLE users (
 	email varchar(50) NOT NULL,
 	email_validated tinyint DEFAULT 0,
 	birth_day date NULL,
-	gender ENUM('male','female') NULL,
+	gender ENUM('male','female') NULL COMMENT "user gender",
 	metadata json NULL,
 	create_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -48,7 +48,7 @@ CREATE TABLE blog_posts (
 	PRIMARY KEY (id),
 	FOREIGN KEY (user_id) REFERENCES users(id),
 	UNIQUE (subject)
-);
+) COMMENT 'user blog posts';
 
 INSERT INTO blog_posts (
 	user_id,
