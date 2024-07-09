@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.3]
+
+### Features
+* Add description comments for enums
+* Include table comment for mysql.
+
+### Fixes
+* Generated type for Date was invalid for runtypes generation. This now references the custom srt.Date runtype.
+
 ## [1.3.2]
 
 ### Features
